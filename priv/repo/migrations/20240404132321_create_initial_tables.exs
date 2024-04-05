@@ -1,11 +1,15 @@
 defmodule PiggyBank.Repo.Migrations.CreateInitialTables do
   use Ecto.Migration
 
-  # Add indexes on all the foreign_keys to start
+  # Create initial tables
+  # - users
+  # - currencies
+  # - ledger_entries
+  # - account_types
+  # - accounts
+  # - transactions
 
   def up do
-    # Create tables
-    # users
     create_if_not_exists table(:users) do
       add :name, :string, null: false
       add :email, :string, null: false
@@ -14,7 +18,6 @@ defmodule PiggyBank.Repo.Migrations.CreateInitialTables do
       timestamps()
     end
 
-    # currencies
     create_if_not_exists table(:currencies) do
       add :name, :string
       add :code, :string
@@ -22,7 +25,6 @@ defmodule PiggyBank.Repo.Migrations.CreateInitialTables do
       timestamps()
     end
 
-    # ledger_entries
     create_if_not_exists table(:ledger_entries) do
       add :description, :string
       add :date, :naive_datetime, null: false
@@ -30,14 +32,12 @@ defmodule PiggyBank.Repo.Migrations.CreateInitialTables do
       timestamps()
     end
 
-    # account_types
     create_if_not_exists table(:account_types) do
       add :name, :string, null: false
 
       timestamps()
     end
 
-    # accounts
     create_if_not_exists table(:accounts) do
       add :name, :string
       add :account_type_id, references(:account_types)
@@ -50,7 +50,6 @@ defmodule PiggyBank.Repo.Migrations.CreateInitialTables do
     create_if_not_exists index(:accounts, [:account_type_id])
     create_if_not_exists index(:accounts, [:user_id])
 
-    # transactions
     create_if_not_exists table(:transactions) do
       add :account_id, references(:accounts), null: false
       add :ledger_entry_id, references(:ledger_entries), null: false
@@ -74,5 +73,4 @@ defmodule PiggyBank.Repo.Migrations.CreateInitialTables do
     drop_if_exists table(:currencies)
     drop_if_exists table(:users)
   end
-
 end
