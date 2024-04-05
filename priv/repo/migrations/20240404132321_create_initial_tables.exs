@@ -47,6 +47,9 @@ defmodule PiggyBank.Repo.Migrations.CreateInitialTables do
       timestamps()
     end
 
+    create_if_not_exists index(:accounts, [:account_type_id])
+    create_if_not_exists index(:accounts, [:user_id])
+
     # transactions
     create_if_not_exists table(:transactions) do
       add :account_id, references(:accounts), null: false
@@ -59,24 +62,17 @@ defmodule PiggyBank.Repo.Migrations.CreateInitialTables do
       timestamps()
     end
 
-
+    create_if_not_exists index(:transactions, [:account_id])
+    create_if_not_exists index(:transactions, [:ledger_entry_id])
   end
 
   def down do
-    # Drop tables
-
-    # transactions
-
-    # accounts
-
-    # account_types
-
-    # ledger_entries
-
-    # currencies
-
-    # customers
-
+    drop_if_exists table(:transactions)
+    drop_if_exists table(:accounts)
+    drop_if_exists table(:account_types)
+    drop_if_exists table(:ledger_entries)
+    drop_if_exists table(:currencies)
+    drop_if_exists table(:users)
   end
 
 end
