@@ -6,7 +6,7 @@ defmodule PiggyBank.Transaction do
   use Ecto.Schema
 
   alias Ecto.Changeset
-  alias PiggyBank.{Account, Currency, LedgerEntry, Transaction}
+  alias PiggyBank.{Account, Currency, LedgerEntry}
 
   @type t :: %__MODULE__{
           account: Account.t(),
@@ -20,6 +20,7 @@ defmodule PiggyBank.Transaction do
   schema "transactions" do
     field :transaction_type, :string
     field :amount, :decimal
+    field :date, :naive_datetime
 
     timestamps()
 
@@ -31,8 +32,8 @@ defmodule PiggyBank.Transaction do
   @spec changeset(map(), map()) :: Changeset.t()
   def changeset(struct, params \\ %{}) do
     struct
-    |> Changeset.cast(params, [:transaction_type, :amount])
-    |> Changeset.validate_required([:transaction_type, :amount])
+    |> Changeset.cast(params, [:transaction_type, :amount, :date])
+    |> Changeset.validate_required([:transaction_type, :amount, :date])
     |> Changeset.cast_assoc(:account, required: true)
     |> Changeset.cast_assoc(:currency, required: true)
     |> Changeset.cast_assoc(:ledger_entry, required: true)
