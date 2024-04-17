@@ -22,6 +22,8 @@ defmodule PiggyBank.Account do
     timestamps()
 
     belongs_to :account_type, AccountType
+    belongs_to :user, User
+
     has_many :transactions, Transaction
   end
 

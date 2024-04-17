@@ -6,7 +6,7 @@ defmodule PiggyBank.LedgerEntry do
   use Ecto.Schema
 
   alias Ecto.Changeset
-  alias PiggyBank.{Account, Transaction}
+  alias PiggyBank.Transaction
 
   @type t :: %__MODULE__{
           description: String.t(),
