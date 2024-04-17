@@ -8,9 +8,9 @@ defmodule PiggyBank.Currency do
   alias Ecto.Changeset
 
   @type t :: %__MODULE__{
-    name: String.t(),
-    code: String.t()
-  }
+          name: String.t(),
+          code: String.t()
+        }
 
   schema "currencies" do
     field :name, :string

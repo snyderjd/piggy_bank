@@ -1,6 +1,6 @@
 defmodule PiggyBank.AccountType do
   @moduledoc """
-  Schema and relationships for AccountType
+  Schema and relationships for account_types
   """
 
   use Ecto.Schema
@@ -8,8 +8,8 @@ defmodule PiggyBank.AccountType do
   alias Ecto.Changeset
 
   @type t :: %__MODULE__{
-    name: String.t()
-  }
+          name: String.t()
+        }
 
   schema "account_types" do
     field :name, :string
@@ -23,5 +23,4 @@ defmodule PiggyBank.AccountType do
     |> Changeset.cast(params, [:name])
     |> Changeset.validate_required([:name])
   end
-
 end
