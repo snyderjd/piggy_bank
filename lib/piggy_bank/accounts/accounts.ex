@@ -34,7 +34,7 @@ defmodule PiggyBank.Accounts do
       %Account{}
 
   """
-  def get_account!(id), do: raise "TODO"
+  def get_account!(id), do: raise("TODO")
 
   @doc """
   Creates a account.
@@ -49,7 +49,22 @@ defmodule PiggyBank.Accounts do
 
   """
   def create_account(attrs \\ %{}) do
-    raise "TODO"
+    # raise "TODO"
+    # Leverage Repo transactions
+    # Create account + insert telemetry data
+
+    # Repo.transaction(fn ->
+    #   with {:ok, issue} <- Issue.changeset(%Issue{}, issue_params) |> Repo.insert(),
+    #        {:ok, _store_issue_from_type} <-
+    #          store_issue_from_type(issue.type, issue_type_params, issue.id),
+    #         {:ok, telemetry} <- AppTelemetry.create_and_insert_telemetry(issue) do
+    #     {:ok, issue}
+    #   else
+    #     error ->
+    #       Logger.error("Transaction failed: #{inspect(error)}")
+    #       Repo.rollback(error)
+    #   end
+    # end)
   end
 
   @doc """

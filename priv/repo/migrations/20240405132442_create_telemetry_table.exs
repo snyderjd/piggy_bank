@@ -1,6 +1,14 @@
 defmodule PiggyBank.Repo.Migrations.CreateTelemetryTable do
   use Ecto.Migration
 
+  # rename to app_telemetry
+  # wire up telemetry
+  # integration tests around Repo.transaction
+  # - fail one of the operations
+  # - test DB => different name
+  # - Run test cleanup before test runs
+  # Ex: Remove records from accounts table, remove records from app_telemetry >> run tests and validate
+
   def up do
     create_if_not_exists table(:telemetry) do
       add :event_name, :string
