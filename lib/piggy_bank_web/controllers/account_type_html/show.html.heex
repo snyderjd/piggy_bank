@@ -1,0 +1,14 @@
+<.header>
+  Account type <%= @account_type.id %>
+  <:subtitle>This is a account_type record from your database.</:subtitle>
+  <:actions>
+    <.link href={~p"/account_types/#{@account_type}/edit"}>
+      <.button>Edit account_type</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+</.list>
+
+<.back navigate={~p"/account_types"}>Back to account_types</.back>

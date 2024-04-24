@@ -6,7 +6,8 @@ defmodule PiggyBank.Account do
   use Ecto.Schema
 
   alias Ecto.Changeset
-  alias PiggyBank.{AccountType, Transaction, User}
+  alias PiggyBank.AccountTypes.AccountType
+  alias PiggyBank.{Transaction, User}
 
   @type t :: %__MODULE__{
           name: String.t(),
