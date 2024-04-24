@@ -7,7 +7,6 @@ defmodule PiggyBankWeb.AccountTypeController do
   @spec index(Plug.Conn.t(), map()) :: Plug.Conn.t()
   def index(conn, _params) do
     account_types = AccountTypes.list_account_types()
-    IO.inspect(account_types, label: "account_types")
     render(conn, :index, account_types: account_types)
   end
 
