@@ -6,7 +6,8 @@ defmodule PiggyBank.Transaction do
   use Ecto.Schema
 
   alias Ecto.Changeset
-  alias PiggyBank.{Account, Currency, LedgerEntry}
+  alias PiggyBank.Accounts.Account
+  alias PiggyBank.{Currency, LedgerEntry}
 
   @type t :: %__MODULE__{
           account: Account.t(),
