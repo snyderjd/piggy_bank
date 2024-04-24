@@ -18,6 +18,8 @@ defmodule PiggyBankWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :home
+
+    resources "/account_types", AccountTypeController
   end
 
   # Other scopes may use custom stacks.

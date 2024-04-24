@@ -1,4 +1,4 @@
-defmodule PiggyBank.AccountType do
+defmodule PiggyBank.AccountTypes.AccountType do
   @moduledoc """
   Schema and relationships for account_types
   """
