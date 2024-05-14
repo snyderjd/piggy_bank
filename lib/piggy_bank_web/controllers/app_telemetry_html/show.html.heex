@@ -1,0 +1,14 @@
+<.header>
+  App telemetry <%= @app_telemetry.id %>
+  <:subtitle>This is a app_telemetry record from your database.</:subtitle>
+  <:actions>
+    <.link href={~p"/app_telemetry/#{@app_telemetry}/edit"}>
+      <.button>Edit app_telemetry</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+</.list>
+
+<.back navigate={~p"/app_telemetry"}>Back to app_telemetry</.back>

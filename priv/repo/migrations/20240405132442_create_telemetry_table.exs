@@ -10,7 +10,7 @@ defmodule PiggyBank.Repo.Migrations.CreateTelemetryTable do
   # Ex: Remove records from accounts table, remove records from app_telemetry >> run tests and validate
 
   def up do
-    create_if_not_exists table(:telemetry) do
+    create_if_not_exists table(:app_telemetry) do
       add :event_name, :string
       add :description, :string
       add :user_id, references(:users)
@@ -21,11 +21,11 @@ defmodule PiggyBank.Repo.Migrations.CreateTelemetryTable do
       timestamps()
     end
 
-    create_if_not_exists index(:telemetry, [:user_id])
-    create_if_not_exists index(:telemetry, [:account_id])
+    create_if_not_exists index(:app_telemetry, [:user_id])
+    create_if_not_exists index(:app_telemetry, [:account_id])
   end
 
   def down do
-    drop_if_exists table(:telemetry)
+    drop_if_exists table(:app_telemetry)
   end
 end

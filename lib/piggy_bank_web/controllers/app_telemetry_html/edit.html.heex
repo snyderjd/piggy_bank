@@ -1,0 +1,8 @@
+<.header>
+  Edit App telemetry <%= @app_telemetry.id %>
+  <:subtitle>Use this form to manage app_telemetry records in your database.</:subtitle>
+</.header>
+
+<.app_telemetry_form changeset={@changeset} action={~p"/app_telemetry/#{@app_telemetry}"} />
+
+<.back navigate={~p"/app_telemetry"}>Back to app_telemetry</.back>
