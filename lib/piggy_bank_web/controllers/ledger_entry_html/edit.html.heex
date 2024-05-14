@@ -1,0 +1,8 @@
+<.header>
+  Edit Ledger entry <%= @ledger_entry.id %>
+  <:subtitle>Use this form to manage ledger_entry records in your database.</:subtitle>
+</.header>
+
+<.ledger_entry_form changeset={@changeset} action={~p"/ledger_entries/#{@ledger_entry}"} />
+
+<.back navigate={~p"/ledger_entries"}>Back to ledger_entries</.back>

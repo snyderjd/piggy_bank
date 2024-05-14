@@ -1,0 +1,22 @@
+<.header>
+  Listing Currencies
+  <:actions>
+    <.link href={~p"/currencies/new"}>
+      <.button>New Currency</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table id="currencies" rows={@currencies} row_click={&JS.navigate(~p"/currencies/#{&1}")}>
+  <:action :let={currency}>
+    <div class="sr-only">
+      <.link navigate={~p"/currencies/#{currency}"}>Show</.link>
+    </div>
+    <.link navigate={~p"/currencies/#{currency}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={currency}>
+    <.link href={~p"/currencies/#{currency}"} method="delete" data-confirm="Are you sure?">
+      Delete
+    </.link>
+  </:action>
+</.table>

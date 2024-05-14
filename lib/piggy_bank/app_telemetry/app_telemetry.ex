@@ -4,7 +4,7 @@ defmodule PiggyBank.AppTelemetryContext.AppTelemetry do
   import Ecto.Changeset
 
   alias PiggyBank.Accounts.Account
-  alias PiggyBank.User
+  alias PiggyBank.Users.User
 
   @type t :: %__MODULE__{
     event_name: String.t(),

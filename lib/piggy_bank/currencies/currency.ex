@@ -1,4 +1,4 @@
-defmodule PiggyBank.Currency do
+defmodule PiggyBank.Currencies.Currency do
   @moduledoc """
   Schema and relationships for currencies
   """

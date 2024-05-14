@@ -1,4 +1,4 @@
-defmodule PiggyBank.Transaction do
+defmodule PiggyBank.Transactions.Transaction do
   @moduledoc """
   Schema and relationships for transactions
   """
@@ -7,7 +7,8 @@ defmodule PiggyBank.Transaction do
 
   alias Ecto.Changeset
   alias PiggyBank.Accounts.Account
-  alias PiggyBank.{Currency, LedgerEntry}
+  alias PiggyBank.Currencies.Currency
+  alias PiggyBank.LedgerEntries.LedgerEntry
 
   @type t :: %__MODULE__{
           account: Account.t(),
