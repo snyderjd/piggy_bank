@@ -7,13 +7,13 @@ defmodule PiggyBank.AppTelemetryContext.AppTelemetry do
   alias PiggyBank.Users.User
 
   @type t :: %__MODULE__{
-    event_name: String.t(),
-    description: String.t(),
-    user: User.t(),
-    account: Account.t(),
-    metadata: Map.t(),
-    date: NaiveDateTime.t()
-  }
+          event_name: String.t(),
+          description: String.t(),
+          user: User.t(),
+          account: Account.t(),
+          metadata: Map.t(),
+          date: NaiveDateTime.t()
+        }
 
   schema "app_telemetry" do
     field :event_name, :string
@@ -32,7 +32,7 @@ defmodule PiggyBank.AppTelemetryContext.AppTelemetry do
     app_telemetry
     |> cast(attrs, [:event_name, :description, :metadata, :date])
     |> validate_required([:event_name, :description, :metadata, :date])
-    |> cast_assoc(:user)
-    |> cast_assoc(:account)
+    |> put_assoc(:user, attrs.user)
+    |> put_assoc(:account, attrs.account)
   end
 end

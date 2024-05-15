@@ -6,8 +6,9 @@ defmodule PiggyBank.Accounts do
   import Ecto.Query, warn: false
   alias PiggyBank.Repo
   alias PiggyBank.Accounts.Account
+  alias PiggyBank.AppTelemetryContext.AppTelemetry
+  alias PiggyBank.AppTelemetryContext
   require Logger
-
 
   @doc """
   Returns the list of accounts.
@@ -54,8 +55,7 @@ defmodule PiggyBank.Accounts do
     # Create account + insert telemetry data
     Repo.transaction(fn ->
       with {:ok, account} <- insert_account(attrs),
-        {:ok, telemetry} <- insert_telemetry_for_create_account(account) do
-
+           {:ok, telemetry} <- insert_telemetry_for_create_account(account) do
         {:ok, account}
       else
         error ->
@@ -73,10 +73,44 @@ defmodule PiggyBank.Accounts do
 
   defp insert_telemetry_for_create_account(account) do
     IO.inspect(account, label: "insert_telemetry_for_create_account - account")
-    telemetry = %{telemetry: "telemetry"}
 
-    {:ok, telemetry}
+    # event_name: make machine-readable: Ex: resource_action == account_create
+    # description: Human readable
+    # metadata: current_user info, any info that is meaningful to this specific event
+    #   - tenant_id for multi-tenant app
+    #   -
+    # Put specific things in meta data to keep from adding nullable associations
+
+    # What to put in here?
+    telemetry_params = %{
+      event_name: "account_create",
+      description: "Create Account #{account.name}",
+      metadata: %{},
+      date: DateTime.utc_now(),
+      account: account
+    }
+
+    IO.inspect(telemetry_params, label: "telemetry_params")
+
+    # %AppTelemetry{}
+    # |> AppTelemetry.changeset(attrs)
+    # |> Repo.insert()
+
+    # AppTelemetryContext.create_app_telemetry(telemetry_params)
+    # {:ok, telemetry_params}
   end
+
+  # schema "app_telemetry" do
+  #   field :event_name, :string
+  #   field :description, :string
+  #   field :metadata, :map
+  #   field :date, :naive_datetime
+
+  #   belongs_to :user, User
+  #   belongs_to :account, Account
+
+  #   timestamps()
+  # end
 
   # Example:
   # Repo.transaction(fn ->
