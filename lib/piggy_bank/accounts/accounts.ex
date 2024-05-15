@@ -5,8 +5,9 @@ defmodule PiggyBank.Accounts do
 
   import Ecto.Query, warn: false
   alias PiggyBank.Repo
-
   alias PiggyBank.Accounts.Account
+  require Logger
+
 
   @doc """
   Returns the list of accounts.
@@ -49,23 +50,47 @@ defmodule PiggyBank.Accounts do
 
   """
   def create_account(attrs \\ %{}) do
-    # raise "TODO"
     # Leverage Repo transactions
     # Create account + insert telemetry data
+    Repo.transaction(fn ->
+      with {:ok, account} <- insert_account(attrs),
+        {:ok, telemetry} <- insert_telemetry_for_create_account(account) do
 
-    # Repo.transaction(fn ->
-    #   with {:ok, issue} <- Issue.changeset(%Issue{}, issue_params) |> Repo.insert(),
-    #        {:ok, _store_issue_from_type} <-
-    #          store_issue_from_type(issue.type, issue_type_params, issue.id),
-    #         {:ok, telemetry} <- AppTelemetry.create_and_insert_telemetry(issue) do
-    #     {:ok, issue}
-    #   else
-    #     error ->
-    #       Logger.error("Transaction failed: #{inspect(error)}")
-    #       Repo.rollback(error)
-    #   end
-    # end)
+        {:ok, account}
+      else
+        error ->
+          Logger.error("Transaction failed: #{inspect(error)}")
+          Repo.rollback(error)
+      end
+    end)
   end
+
+  defp insert_account(attrs) do
+    %Account{}
+    |> Account.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  defp insert_telemetry_for_create_account(account) do
+    IO.inspect(account, label: "insert_telemetry_for_create_account - account")
+    telemetry = %{telemetry: "telemetry"}
+
+    {:ok, telemetry}
+  end
+
+  # Example:
+  # Repo.transaction(fn ->
+  #   with {:ok, issue} <- Issue.changeset(%Issue{}, issue_params) |> Repo.insert(),
+  #        {:ok, _store_issue_from_type} <-
+  #          store_issue_from_type(issue.type, issue_type_params, issue.id),
+  #         {:ok, telemetry} <- AppTelemetry.create_and_insert_telemetry(issue) do
+  #     {:ok, issue}
+  #   else
+  #     error ->
+  #       Logger.error("Transaction failed: #{inspect(error)}")
+  #       Repo.rollback(error)
+  #   end
+  # end)
 
   @doc """
   Updates a account.

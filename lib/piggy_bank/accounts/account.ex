@@ -34,6 +34,6 @@ defmodule PiggyBank.Accounts.Account do
     struct
     |> Changeset.cast(params, [:name, :usd_current_balance])
     |> Changeset.validate_required([:name])
-    |> Changeset.cast_assoc(:account_type, required: true)
+    |> Changeset.put_assoc(:account_type, params.account_type, required: true)
   end
 end
