@@ -7,10 +7,10 @@ defmodule PiggyBankWeb.AccountController do
   @spec index(Plug.Conn.t(), map()) :: Plug.Conn.t()
   def index(conn, _params) do
     accounts = Accounts.list_accounts()
-    IO.inspect(accounts, label: "accounts")
     render(conn, :index, accounts: accounts)
   end
 
+  @spec new(Plug.Conn.t(), map()) :: Plug.Conn.t()
   def new(conn, _params) do
     changeset = Accounts.change_account(%Account{})
     render(conn, :new, changeset: changeset)

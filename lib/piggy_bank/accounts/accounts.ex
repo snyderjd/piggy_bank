@@ -108,7 +108,7 @@ defmodule PiggyBank.Accounts do
       %Todo{...}
 
   """
-  def change_account(%Account{} = account, _attrs \\ %{}) do
-    raise "TODO"
+  def change_account(%Account{} = account, attrs \\ %{}) do
+    Account.changeset(account, attrs)
   end
 end
