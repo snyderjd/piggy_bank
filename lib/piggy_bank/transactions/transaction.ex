@@ -36,6 +36,7 @@ defmodule PiggyBank.Transactions.Transaction do
     struct
     |> Changeset.cast(params, [:transaction_type, :amount, :date])
     |> Changeset.validate_required([:transaction_type, :amount, :date])
+    |> Changeset.validate_inclusion(:transaction_type, ["debit", "credit"])
     |> Changeset.cast_assoc(:account, required: true)
     |> Changeset.cast_assoc(:currency, required: true)
     |> Changeset.cast_assoc(:ledger_entry, required: true)

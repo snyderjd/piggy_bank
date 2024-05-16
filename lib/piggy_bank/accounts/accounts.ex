@@ -50,12 +50,12 @@ defmodule PiggyBank.Accounts do
       {:error, ...}
 
   """
+  @spec create_account(map()) :: {:ok, Account.t()} | {:error, _error}
   def create_account(attrs \\ %{}) do
-    # Leverage Repo transactions
     # Create account + insert telemetry data
     Repo.transaction(fn ->
       with {:ok, account} <- insert_account(attrs),
-           {:ok, telemetry} <- insert_telemetry_for_create_account(account) do
+           {:ok, _telemetry} <- insert_telemetry_for_create_account(account) do
         {:ok, account}
       else
         error ->
@@ -72,59 +72,26 @@ defmodule PiggyBank.Accounts do
   end
 
   defp insert_telemetry_for_create_account(account) do
-    IO.inspect(account, label: "insert_telemetry_for_create_account - account")
-
-    # event_name: make machine-readable: Ex: resource_action == account_create
-    # description: Human readable
-    # metadata: current_user info, any info that is meaningful to this specific event
+    # Telemetry notes:
+    #   event_name: make machine-readable: Ex: action_resource == create_account
+    #   description: Human readable
+    #   metadata: current_user info, any info that is meaningful to this specific event
     #   - tenant_id for multi-tenant app
-    #   -
-    # Put specific things in meta data to keep from adding nullable associations
+    #   Put specific things in meta data to keep from adding nullable associations
 
-    # What to put in here?
     telemetry_params = %{
-      event_name: "account_create",
+      event_name: "create_account",
       description: "Create Account #{account.name}",
       metadata: %{},
       date: DateTime.utc_now(),
-      account: account
+      account: account,
+      user: nil
     }
 
-    IO.inspect(telemetry_params, label: "telemetry_params")
-
-    # %AppTelemetry{}
-    # |> AppTelemetry.changeset(attrs)
-    # |> Repo.insert()
-
-    # AppTelemetryContext.create_app_telemetry(telemetry_params)
-    # {:ok, telemetry_params}
+    %AppTelemetry{}
+    |> AppTelemetry.changeset(telemetry_params)
+    |> Repo.insert()
   end
-
-  # schema "app_telemetry" do
-  #   field :event_name, :string
-  #   field :description, :string
-  #   field :metadata, :map
-  #   field :date, :naive_datetime
-
-  #   belongs_to :user, User
-  #   belongs_to :account, Account
-
-  #   timestamps()
-  # end
-
-  # Example:
-  # Repo.transaction(fn ->
-  #   with {:ok, issue} <- Issue.changeset(%Issue{}, issue_params) |> Repo.insert(),
-  #        {:ok, _store_issue_from_type} <-
-  #          store_issue_from_type(issue.type, issue_type_params, issue.id),
-  #         {:ok, telemetry} <- AppTelemetry.create_and_insert_telemetry(issue) do
-  #     {:ok, issue}
-  #   else
-  #     error ->
-  #       Logger.error("Transaction failed: #{inspect(error)}")
-  #       Repo.rollback(error)
-  #   end
-  # end)
 
   @doc """
   Updates a account.
