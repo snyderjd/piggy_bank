@@ -41,7 +41,10 @@ defmodule PiggyBankWeb.AppTelemetryControllerTest do
   describe "edit app_telemetry" do
     setup [:create_app_telemetry]
 
-    test "renders form for editing chosen app_telemetry", %{conn: conn, app_telemetry: app_telemetry} do
+    test "renders form for editing chosen app_telemetry", %{
+      conn: conn,
+      app_telemetry: app_telemetry
+    } do
       conn = get(conn, ~p"/app_telemetry/#{app_telemetry}/edit")
       assert html_response(conn, 200) =~ "Edit App telemetry"
     end

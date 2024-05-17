@@ -7,7 +7,11 @@
   </:actions>
 </.header>
 
-<.table id="ledger_entries" rows={@ledger_entries} row_click={&JS.navigate(~p"/ledger_entries/#{&1}")}>
+<.table
+  id="ledger_entries"
+  rows={@ledger_entries}
+  row_click={&JS.navigate(~p"/ledger_entries/#{&1}")}
+>
   <:action :let={ledger_entry}>
     <div class="sr-only">
       <.link navigate={~p"/ledger_entries/#{ledger_entry}"}>Show</.link>

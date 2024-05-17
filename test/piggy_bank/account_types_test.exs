@@ -34,12 +34,16 @@ defmodule PiggyBank.AccountTypesTest do
       account_type = account_type_fixture()
       update_attrs = %{}
 
-      assert {:ok, %AccountType{} = account_type} = AccountTypes.update_account_type(account_type, update_attrs)
+      assert {:ok, %AccountType{} = account_type} =
+               AccountTypes.update_account_type(account_type, update_attrs)
     end
 
     test "update_account_type/2 with invalid data returns error changeset" do
       account_type = account_type_fixture()
-      assert {:error, %Ecto.Changeset{}} = AccountTypes.update_account_type(account_type, @invalid_attrs)
+
+      assert {:error, %Ecto.Changeset{}} =
+               AccountTypes.update_account_type(account_type, @invalid_attrs)
+
       assert account_type == AccountTypes.get_account_type!(account_type.id)
     end
 

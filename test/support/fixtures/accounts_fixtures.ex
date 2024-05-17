@@ -10,9 +10,7 @@ defmodule PiggyBank.AccountsFixtures do
   def account_fixture(attrs \\ %{}) do
     {:ok, account} =
       attrs
-      |> Enum.into(%{
-
-      })
+      |> Enum.into(%{})
       |> PiggyBank.Accounts.create_account()
 
     account

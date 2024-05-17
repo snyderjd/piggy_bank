@@ -10,9 +10,7 @@ defmodule PiggyBank.LedgerEntriesFixtures do
   def ledger_entry_fixture(attrs \\ %{}) do
     {:ok, ledger_entry} =
       attrs
-      |> Enum.into(%{
-
-      })
+      |> Enum.into(%{})
       |> PiggyBank.LedgerEntries.create_ledger_entry()
 
     ledger_entry

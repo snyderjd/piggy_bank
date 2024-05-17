@@ -33,7 +33,7 @@ defmodule PiggyBank.AccountTypes do
       %AccountType{}
 
   """
-  def get_account_type!(id), do: raise "TODO"
+  def get_account_type!(id), do: raise("TODO")
 
   @doc """
   Creates a account_type.

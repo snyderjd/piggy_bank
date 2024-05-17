@@ -10,9 +10,7 @@ defmodule PiggyBank.AppTelemetryContextFixtures do
   def app_telemetry_fixture(attrs \\ %{}) do
     {:ok, app_telemetry} =
       attrs
-      |> Enum.into(%{
-
-      })
+      |> Enum.into(%{})
       |> PiggyBank.AppTelemetryContext.create_app_telemetry()
 
     app_telemetry

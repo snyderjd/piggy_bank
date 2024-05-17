@@ -10,9 +10,7 @@ defmodule PiggyBank.TransactionsFixtures do
   def transaction_fixture(attrs \\ %{}) do
     {:ok, transaction} =
       attrs
-      |> Enum.into(%{
-
-      })
+      |> Enum.into(%{})
       |> PiggyBank.Transactions.create_transaction()
 
     transaction

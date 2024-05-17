@@ -32,7 +32,7 @@ defmodule PiggyBank.Currencies do
       %Currency{}
 
   """
-  def get_currency!(id), do: raise "TODO"
+  def get_currency!(id), do: raise("TODO")
 
   @doc """
   Creates a currency.

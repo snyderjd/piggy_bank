@@ -34,12 +34,16 @@ defmodule PiggyBank.LedgerEntriesTest do
       ledger_entry = ledger_entry_fixture()
       update_attrs = %{}
 
-      assert {:ok, %LedgerEntry{} = ledger_entry} = LedgerEntries.update_ledger_entry(ledger_entry, update_attrs)
+      assert {:ok, %LedgerEntry{} = ledger_entry} =
+               LedgerEntries.update_ledger_entry(ledger_entry, update_attrs)
     end
 
     test "update_ledger_entry/2 with invalid data returns error changeset" do
       ledger_entry = ledger_entry_fixture()
-      assert {:error, %Ecto.Changeset{}} = LedgerEntries.update_ledger_entry(ledger_entry, @invalid_attrs)
+
+      assert {:error, %Ecto.Changeset{}} =
+               LedgerEntries.update_ledger_entry(ledger_entry, @invalid_attrs)
+
       assert ledger_entry == LedgerEntries.get_ledger_entry!(ledger_entry.id)
     end
 

@@ -32,7 +32,7 @@ defmodule PiggyBank.Transactions do
       %Transaction{}
 
   """
-  def get_transaction!(id), do: raise "TODO"
+  def get_transaction!(id), do: raise("TODO")
 
   @doc """
   Creates a transaction.

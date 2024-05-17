@@ -10,9 +10,7 @@ defmodule PiggyBank.CurrenciesFixtures do
   def currency_fixture(attrs \\ %{}) do
     {:ok, currency} =
       attrs
-      |> Enum.into(%{
-
-      })
+      |> Enum.into(%{})
       |> PiggyBank.Currencies.create_currency()
 
     currency

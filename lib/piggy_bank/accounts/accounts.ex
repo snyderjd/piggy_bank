@@ -4,6 +4,7 @@ defmodule PiggyBank.Accounts do
   """
 
   import Ecto.Query, warn: false
+  alias Ecto.Multi
   alias PiggyBank.Repo
   alias PiggyBank.Accounts.Account
   alias PiggyBank.AppTelemetryContext.AppTelemetry
@@ -50,28 +51,23 @@ defmodule PiggyBank.Accounts do
       {:error, ...}
 
   """
-  @spec create_account(map()) :: {:ok, Account.t()} | {:error, _error}
+  @spec create_account(map()) :: {:ok, Account.t()}
   def create_account(attrs \\ %{}) do
     # Create account + insert telemetry data
-    Repo.transaction(fn ->
-      with {:ok, account} <- insert_account(attrs),
-           {:ok, _telemetry} <- insert_telemetry_for_create_account(account) do
-        {:ok, account}
-      else
-        error ->
-          Logger.error("Transaction failed: #{inspect(error)}")
-          Repo.rollback(error)
-      end
+    Multi.new()
+    |> Multi.insert(:account, insert_account_changeset(attrs))
+    |> Multi.insert(:app_telemetry, fn %{account: account} ->
+      IO.inspect(account, label: "account")
+      telemetry_for_create_account_changeset(account)
     end)
+    |> Repo.transaction()
   end
 
-  defp insert_account(attrs) do
-    %Account{}
-    |> Account.changeset(attrs)
-    |> Repo.insert()
+  defp insert_account_changeset(attrs) do
+    Account.changeset(%Account{}, attrs)
   end
 
-  defp insert_telemetry_for_create_account(account) do
+  defp telemetry_for_create_account_changeset(account) do
     # Telemetry notes:
     #   event_name: make machine-readable: Ex: action_resource == create_account
     #   description: Human readable
@@ -88,9 +84,7 @@ defmodule PiggyBank.Accounts do
       user: nil
     }
 
-    %AppTelemetry{}
-    |> AppTelemetry.changeset(telemetry_params)
-    |> Repo.insert()
+    AppTelemetry.changeset(%AppTelemetry{}, telemetry_params)
   end
 
   @doc """

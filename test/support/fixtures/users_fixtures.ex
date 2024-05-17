@@ -10,9 +10,7 @@ defmodule PiggyBank.UsersFixtures do
   def user_fixture(attrs \\ %{}) do
     {:ok, user} =
       attrs
-      |> Enum.into(%{
-
-      })
+      |> Enum.into(%{})
       |> PiggyBank.Users.create_user()
 
     user

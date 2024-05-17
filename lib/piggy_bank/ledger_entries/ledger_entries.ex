@@ -32,7 +32,7 @@ defmodule PiggyBank.LedgerEntries do
       %LedgerEntry{}
 
   """
-  def get_ledger_entry!(id), do: raise "TODO"
+  def get_ledger_entry!(id), do: raise("TODO")
 
   @doc """
   Creates a ledger_entry.
