@@ -4,10 +4,12 @@ defmodule PiggyBank.LedgerEntries do
   """
 
   import Ecto.Query, warn: false
+  alias Ecto.Multi
   alias PiggyBank.Repo
 
   alias PiggyBank.LedgerEntries.LedgerEntry
 
+  @spec list_ledger_entries :: [LedgerEntry.t()]
   @doc """
   Returns the list of ledger_entries.
 
@@ -18,37 +20,49 @@ defmodule PiggyBank.LedgerEntries do
 
   """
   def list_ledger_entries do
-    raise "TODO"
+    LedgerEntry
+    |> preload([:transactions])
+    |> Repo.all()
   end
 
+  @spec get_ledger_entry!(integer()) :: LedgerEntry.t()
   @doc """
-  Gets a single ledger_entry.
-
-  Raises if the Ledger entry does not exist.
-
+  Gets a single ledger_entry. Raises if the Ledger entry does not exist.
   ## Examples
-
       iex> get_ledger_entry!(123)
       %LedgerEntry{}
-
   """
-  def get_ledger_entry!(id), do: raise("TODO")
+  def get_ledger_entry!(id), do: Repo.get!(LedgerEntry, id)
 
   @doc """
   Creates a ledger_entry.
-
   ## Examples
-
       iex> create_ledger_entry(%{field: value})
       {:ok, %LedgerEntry{}}
-
       iex> create_ledger_entry(%{field: bad_value})
       {:error, ...}
-
   """
   def create_ledger_entry(attrs \\ %{}) do
-    raise "TODO"
+    # Need to do all of the following to create a valid ledger_entry
+    #   - Insert the ledger_entry
+    #   - Insert the relevant transactions
+    #   - Validate the transactions/ledger_entry (debits == credits, assets == liabilities, etc.)
+    #   - Insert telemetry
+    #   - Commit the transaction
+    Multi.new()
+    |> Repo.transaction()
   end
+
+  # @spec create_account(map()) :: {:ok, Account.t()}
+  # def create_account(attrs \\ %{}) do
+  #   # Create account + insert telemetry data
+  #   Multi.new()
+  #   |> Multi.insert(:account, insert_account_changeset(attrs))
+  #   |> Multi.insert(:app_telemetry, fn %{account: account} ->
+  #     telemetry_for_create_account_changeset(account)
+  #   end)
+  #   |> Repo.transaction()
+  # end
 
   @doc """
   Updates a ledger_entry.
