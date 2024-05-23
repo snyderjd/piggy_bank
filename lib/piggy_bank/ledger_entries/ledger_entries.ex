@@ -6,8 +6,8 @@ defmodule PiggyBank.LedgerEntries do
   import Ecto.Query, warn: false
   alias Ecto.Multi
   alias PiggyBank.Repo
-
   alias PiggyBank.LedgerEntries.LedgerEntry
+  alias PiggyBank.Transactions.Transaction
 
   @spec list_ledger_entries :: [LedgerEntry.t()]
   @doc """
@@ -50,6 +50,20 @@ defmodule PiggyBank.LedgerEntries do
     #   - Insert telemetry
     #   - Commit the transaction
     Multi.new()
+    |> Multi.insert(:ledger_entry, LedgerEntry.changeset(%LedgerEntry{}, attrs.ledger_entry))
+    |> Multi.run(:transactions, fn repo, %{ledger_entry: ledger_entry} ->
+      transactions =
+        attrs.transactions
+        |> Enum.map(fn t ->
+          params = Map.put(t, :ledger_entry, ledger_entry)
+
+          %Transaction{}
+          |> Transaction.changeset(params)
+          |> repo.insert!()
+        end)
+
+      {:ok, transactions}
+    end)
     |> Repo.transaction()
   end
 
