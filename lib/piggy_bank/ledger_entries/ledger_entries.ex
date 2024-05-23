@@ -8,6 +8,7 @@ defmodule PiggyBank.LedgerEntries do
   alias PiggyBank.Repo
   alias PiggyBank.LedgerEntries.LedgerEntry
   alias PiggyBank.Transactions.Transaction
+  alias PiggyBank.AppTelemetryContext.AppTelemetry
 
   @spec list_ledger_entries :: [LedgerEntry.t()]
   @doc """
@@ -64,8 +65,62 @@ defmodule PiggyBank.LedgerEntries do
 
       {:ok, transactions}
     end)
+    |> Multi.insert(:ledger_entry_telemetry, fn %{ledger_entry: ledger_entry} ->
+      telemetry_params = %{
+        event_name: "create_ledger_entry",
+        description: "Create Ledger Entry #{ledger_entry.description}",
+        metadata: %{id: ledger_entry.id, description: ledger_entry.description, date: ledger_entry.date},
+        date: DateTime.utc_now(),
+        account: nil,
+        user: nil
+      }
+
+      AppTelemetry.changeset(%AppTelemetry{}, telemetry_params)
+    end)
+    |> Multi.run(:transactions_telemetry, fn repo, %{transactions: transactions} ->
+      telemetry_records =
+        Enum.map(transactions, fn t ->
+          IO.inspect(t, label: "transaction")
+
+          # Issue inserting the user association - either not loaded or
+          # some accounts don't have a user
+          params = %{
+            event_name: "create_transaction",
+            description: "Create Transaction #{t.transaction_type} #{t.account.name} #{t.amount}",
+            metadata: %{
+              id: t.id,
+              transaction_type: t.transaction_type,
+              amount: t.amount,
+              date: t.date,
+              account_id: t.account_id,
+              currency_id: t.currency_id,
+              ledger_entry_id: t.ledger_entry_id
+            },
+            account: t.account,
+            user: t.account.user
+          }
+
+          %AppTelemetry{}
+          |> AppTelemetry.changeset(params)
+          |> repo.insert!()
+      end)
+
+      {:ok, telemetry_records}
+    end)
     |> Repo.transaction()
   end
+
+  # schema "transactions" do
+  #   field :transaction_type, :string
+  #   field :amount, :decimal
+  #   field :date, :naive_datetime
+
+  #   timestamps()
+
+  #   belongs_to :account, Account
+  #   belongs_to :currency, Currency
+  #   belongs_to :ledger_entry, LedgerEntry
+  # end
 
   # @spec create_account(map()) :: {:ok, Account.t()}
   # def create_account(attrs \\ %{}) do
