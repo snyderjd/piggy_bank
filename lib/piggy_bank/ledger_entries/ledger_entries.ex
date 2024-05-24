@@ -79,11 +79,9 @@ defmodule PiggyBank.LedgerEntries do
     end)
     |> Multi.run(:transactions_telemetry, fn repo, %{transactions: transactions} ->
       telemetry_records =
-        Enum.map(transactions, fn t ->
-          IO.inspect(t, label: "transaction")
+        Enum.map(transactions, fn transaction ->
+          t = repo.preload(transaction, [account: :user])
 
-          # Issue inserting the user association - either not loaded or
-          # some accounts don't have a user
           params = %{
             event_name: "create_transaction",
             description: "Create Transaction #{t.transaction_type} #{t.account.name} #{t.amount}",
@@ -96,6 +94,7 @@ defmodule PiggyBank.LedgerEntries do
               currency_id: t.currency_id,
               ledger_entry_id: t.ledger_entry_id
             },
+            date: t.date,
             account: t.account,
             user: t.account.user
           }
