@@ -10,4 +10,8 @@ defmodule PiggyBankWeb.AccountHTML do
   attr :action, :string, required: true
 
   def account_form(assigns)
+
+  def render_account_user(account) do
+    if(account.user, do: account.user.name, else: "N/A")
+  end
 end

@@ -19,7 +19,7 @@ defmodule PiggyBank.Accounts do
   """
   def list_accounts do
     Account
-    |> preload([:account_type])
+    |> preload([:account_type, :user])
     |> Repo.all()
   end
 
@@ -30,7 +30,11 @@ defmodule PiggyBank.Accounts do
       iex> get_account!(123)
       %Account{}
   """
-  def get_account!(id), do: Repo.get!(Account, id)
+  def get_account!(id) do
+    Account
+    |> preload([:account_type, :user, :transactions])
+    |> Repo.get!(id)
+  end
 
   @doc """
   Creates a account.

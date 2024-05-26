@@ -1,22 +1,5 @@
-<.header>Accounts</.header>
-
-<table>
-  <tr>
-    <th>Name</th>
-    <th>Account Type</th>
-    <th>Current Balance (USD)</th>
-  </tr>
-  <%= for account <- @accounts do %>
-    <tr>
-      <td><%= account.name %></td>
-      <td><%= account.account_type.name %></td>
-      <td><%= account.usd_current_balance %></td>
-    </tr>
-  <% end %>
-</table>
-
-<%!-- <.header>
-  Listing Accounts
+<.header>
+  Accounts
   <:actions>
     <.link href={~p"/accounts/new"}>
       <.button>New Account</.button>
@@ -25,6 +8,10 @@
 </.header>
 
 <.table id="accounts" rows={@accounts} row_click={&JS.navigate(~p"/accounts/#{&1}")}>
+  <:col :let={account} label="Name"><%= account.name %></:col>
+  <:col :let={account} label="Account Type"><%= account.account_type.name %></:col>
+  <:col :let={account} label="User"><%= render_account_user(account) %></:col>
+  <:col :let={account} label="USD Balance"><%= account.usd_current_balance %></:col>
   <:action :let={account}>
     <div class="sr-only">
       <.link navigate={~p"/accounts/#{account}"}>Show</.link>
@@ -36,4 +23,4 @@
       Delete
     </.link>
   </:action>
-</.table> --%>
+</.table>
