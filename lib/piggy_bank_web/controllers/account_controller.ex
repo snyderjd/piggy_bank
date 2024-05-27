@@ -24,10 +24,10 @@ defmodule PiggyBankWeb.AccountController do
 
   def create(conn, %{"account" => account_params}) do
     case Accounts.create_account(account_params) do
-      {:ok, account} ->
+      {:ok, multi} ->
         conn
         |> put_flash(:info, "Account created successfully.")
-        |> redirect(to: ~p"/accounts/#{account}")
+        |> redirect(to: ~p"/accounts/#{multi.account.id}")
 
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, :new, changeset: changeset)
