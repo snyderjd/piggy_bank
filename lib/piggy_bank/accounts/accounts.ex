@@ -72,8 +72,8 @@ defmodule PiggyBank.Accounts do
       description: "Create Account #{account.name}",
       metadata: %{},
       date: DateTime.utc_now(),
-      account: account,
-      user: nil
+      account_id: account.id,
+      user_id: account.user_id
     }
 
     AppTelemetry.changeset(%AppTelemetry{}, telemetry_params)

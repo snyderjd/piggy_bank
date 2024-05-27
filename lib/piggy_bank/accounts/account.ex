@@ -33,9 +33,14 @@ defmodule PiggyBank.Accounts.Account do
   @spec changeset(map(), map()) :: Changeset.t()
   def changeset(struct, params \\ %{}) do
     struct
-    |> Changeset.cast(params, [:name, :usd_current_balance])
+    |> Changeset.cast(params, [:name, :usd_current_balance, :account_type_id, :user_id])
     |> Changeset.validate_required([:name])
-
-    # |> Changeset.put_assoc(:account_type, params.account_type, required: true)
+    |> add_account_type_association(params)
   end
+
+  defp add_account_type_association(changeset, %{account_type: account_type} = _params) do
+    Changeset.put_assoc(changeset, :account_type, account_type)
+  end
+
+  defp add_account_type_association(changeset, _params), do: changeset
 end
