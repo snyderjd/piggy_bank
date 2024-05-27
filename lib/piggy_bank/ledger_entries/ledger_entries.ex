@@ -69,7 +69,11 @@ defmodule PiggyBank.LedgerEntries do
       telemetry_params = %{
         event_name: "create_ledger_entry",
         description: "Create Ledger Entry #{ledger_entry.description}",
-        metadata: %{id: ledger_entry.id, description: ledger_entry.description, date: ledger_entry.date},
+        metadata: %{
+          id: ledger_entry.id,
+          description: ledger_entry.description,
+          date: ledger_entry.date
+        },
         date: DateTime.utc_now(),
         account: nil,
         user: nil
@@ -80,7 +84,7 @@ defmodule PiggyBank.LedgerEntries do
     |> Multi.run(:transactions_telemetry, fn repo, %{transactions: transactions} ->
       telemetry_records =
         Enum.map(transactions, fn transaction ->
-          t = repo.preload(transaction, [account: :user])
+          t = repo.preload(transaction, account: :user)
 
           params = %{
             event_name: "create_transaction",
@@ -102,7 +106,7 @@ defmodule PiggyBank.LedgerEntries do
           %AppTelemetry{}
           |> AppTelemetry.changeset(params)
           |> repo.insert!()
-      end)
+        end)
 
       {:ok, telemetry_records}
     end)

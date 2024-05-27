@@ -4,17 +4,20 @@
   </.error>
 
   <.input field={f[:name]} label="Name" />
-  <.input field={f[:account_type]} label="Account Type" type="select" />
+  <.input
+    field={f[:account_type_id]}
+    label="Account Type"
+    type="select"
+    options={Enum.map(@account_types, fn at -> {at.name, at.id} end)}
+  />
+  <.input
+    field={f[:user_id]}
+    label="User"
+    type="select"
+    options={[{"None", ""} | Enum.map(@users, fn u -> {u.name, u.id} end)]}
+  />
 
   <:actions>
     <.button>Save Account</.button>
   </:actions>
 </.simple_form>
-
-<%!-- <.simple_form for={@form} phx-change="validate" phx-submit="save">
-  <.input field={@form[:email]} label="Email"/>
-  <.input field={@form[:username]} label="Username" />
-  <:actions>
-    <.button>Save</.button>
-  </:actions>
-</.simple_form> --%>

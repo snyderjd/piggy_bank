@@ -3,6 +3,9 @@ defmodule PiggyBankWeb.AccountController do
 
   alias PiggyBank.Accounts
   alias PiggyBank.Accounts.Account
+  alias PiggyBank.AccountTypes.AccountType
+  alias PiggyBank.Repo
+  alias PiggyBank.Users.User
 
   @spec index(Plug.Conn.t(), map()) :: Plug.Conn.t()
   def index(conn, _params) do
@@ -13,7 +16,10 @@ defmodule PiggyBankWeb.AccountController do
   @spec new(Plug.Conn.t(), map()) :: Plug.Conn.t()
   def new(conn, _params) do
     changeset = Accounts.change_account(%Account{})
-    render(conn, :new, changeset: changeset)
+    account_types = Repo.all(AccountType)
+    users = Repo.all(User)
+
+    render(conn, :new, changeset: changeset, account_types: account_types, users: users)
   end
 
   def create(conn, %{"account" => account_params}) do
