@@ -22,18 +22,15 @@ defmodule PiggyBank.AccountTypes do
     |> Repo.all()
   end
 
+  @spec get_account_type!(integer()) :: AccountType.t()
   @doc """
   Gets a single account_type.
-
   Raises if the Account type does not exist.
-
   ## Examples
-
       iex> get_account_type!(123)
       %AccountType{}
-
   """
-  def get_account_type!(id), do: raise("TODO")
+  def get_account_type!(id), do: Repo.get!(AccountType, id)
 
   @doc """
   Creates a account_type.
@@ -47,7 +44,7 @@ defmodule PiggyBank.AccountTypes do
       {:error, ...}
 
   """
-  def create_account_type(attrs \\ %{}) do
+  def create_account_type(_attrs \\ %{}) do
     raise "TODO"
   end
 
@@ -63,7 +60,7 @@ defmodule PiggyBank.AccountTypes do
       {:error, ...}
 
   """
-  def update_account_type(%AccountType{} = account_type, attrs) do
+  def update_account_type(%AccountType{} = _account_type, _attrs) do
     raise "TODO"
   end
 
@@ -79,7 +76,7 @@ defmodule PiggyBank.AccountTypes do
       {:error, ...}
 
   """
-  def delete_account_type(%AccountType{} = account_type) do
+  def delete_account_type(%AccountType{} = _account_type) do
     raise "TODO"
   end
 
@@ -92,7 +89,7 @@ defmodule PiggyBank.AccountTypes do
       %Todo{...}
 
   """
-  def change_account_type(%AccountType{} = account_type, _attrs \\ %{}) do
+  def change_account_type(%AccountType{} = _account_type, _attrs \\ %{}) do
     raise "TODO"
   end
 end

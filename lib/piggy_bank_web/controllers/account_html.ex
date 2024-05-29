@@ -8,6 +8,8 @@ defmodule PiggyBankWeb.AccountHTML do
   """
   attr :changeset, Ecto.Changeset, required: true
   attr :action, :string, required: true
+  attr :account_types, :list
+  attr :users, :list
 
   def account_form(assigns)
 

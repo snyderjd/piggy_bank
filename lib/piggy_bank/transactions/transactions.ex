@@ -21,18 +21,15 @@ defmodule PiggyBank.Transactions do
     raise "TODO"
   end
 
+  @spec get_transaction!(integer()) :: Transaction.t()
   @doc """
   Gets a single transaction.
-
   Raises if the Transaction does not exist.
-
   ## Examples
-
       iex> get_transaction!(123)
       %Transaction{}
-
   """
-  def get_transaction!(id), do: raise("TODO")
+  def get_transaction!(id), do: Repo.get!(Transaction, id)
 
   @doc """
   Creates a transaction.
@@ -46,7 +43,7 @@ defmodule PiggyBank.Transactions do
       {:error, ...}
 
   """
-  def create_transaction(attrs \\ %{}) do
+  def create_transaction(_attrs \\ %{}) do
     raise "TODO"
   end
 
@@ -62,7 +59,7 @@ defmodule PiggyBank.Transactions do
       {:error, ...}
 
   """
-  def update_transaction(%Transaction{} = transaction, attrs) do
+  def update_transaction(%Transaction{} = _transaction, _attrs) do
     raise "TODO"
   end
 
@@ -78,7 +75,7 @@ defmodule PiggyBank.Transactions do
       {:error, ...}
 
   """
-  def delete_transaction(%Transaction{} = transaction) do
+  def delete_transaction(%Transaction{} = _transaction) do
     raise "TODO"
   end
 
@@ -91,7 +88,7 @@ defmodule PiggyBank.Transactions do
       %Todo{...}
 
   """
-  def change_transaction(%Transaction{} = transaction, _attrs \\ %{}) do
+  def change_transaction(%Transaction{} = _transaction, _attrs \\ %{}) do
     raise "TODO"
   end
 end

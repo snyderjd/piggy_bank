@@ -7,7 +7,6 @@ defmodule PiggyBank.Accounts.Account do
 
   alias Ecto.Changeset
   alias PiggyBank.AccountTypes.AccountType
-  alias PiggyBank.Repo
   alias PiggyBank.Transactions.Transaction
   alias PiggyBank.Users.User
 

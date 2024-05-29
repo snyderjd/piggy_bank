@@ -21,18 +21,15 @@ defmodule PiggyBank.Currencies do
     raise "TODO"
   end
 
+  @spec get_currency!(integer()) :: Currency.t()
   @doc """
   Gets a single currency.
-
   Raises if the Currency does not exist.
-
   ## Examples
-
       iex> get_currency!(123)
       %Currency{}
-
   """
-  def get_currency!(id), do: raise("TODO")
+  def get_currency!(id), do: Repo.get!(Currency, id)
 
   @doc """
   Creates a currency.
@@ -46,7 +43,7 @@ defmodule PiggyBank.Currencies do
       {:error, ...}
 
   """
-  def create_currency(attrs \\ %{}) do
+  def create_currency(_attrs \\ %{}) do
     raise "TODO"
   end
 
@@ -62,7 +59,7 @@ defmodule PiggyBank.Currencies do
       {:error, ...}
 
   """
-  def update_currency(%Currency{} = currency, attrs) do
+  def update_currency(%Currency{} = _currency, _attrs) do
     raise "TODO"
   end
 
@@ -78,7 +75,7 @@ defmodule PiggyBank.Currencies do
       {:error, ...}
 
   """
-  def delete_currency(%Currency{} = currency) do
+  def delete_currency(%Currency{} = _currency) do
     raise "TODO"
   end
 
@@ -91,7 +88,7 @@ defmodule PiggyBank.Currencies do
       %Todo{...}
 
   """
-  def change_currency(%Currency{} = currency, _attrs \\ %{}) do
+  def change_currency(%Currency{} = _currency, _attrs \\ %{}) do
     raise "TODO"
   end
 end

@@ -21,18 +21,15 @@ defmodule PiggyBank.Users do
     raise "TODO"
   end
 
+  @spec get_user!(integer()) :: User.t()
   @doc """
   Gets a single user.
-
   Raises if the User does not exist.
-
   ## Examples
-
       iex> get_user!(123)
       %User{}
-
   """
-  def get_user!(id), do: raise("TODO")
+  def get_user!(id), do: Repo.get!(User, id)
 
   @doc """
   Creates a user.
@@ -46,7 +43,7 @@ defmodule PiggyBank.Users do
       {:error, ...}
 
   """
-  def create_user(attrs \\ %{}) do
+  def create_user(_attrs \\ %{}) do
     raise "TODO"
   end
 
@@ -62,7 +59,7 @@ defmodule PiggyBank.Users do
       {:error, ...}
 
   """
-  def update_user(%User{} = user, attrs) do
+  def update_user(%User{} = _user, _attrs) do
     raise "TODO"
   end
 
@@ -78,7 +75,7 @@ defmodule PiggyBank.Users do
       {:error, ...}
 
   """
-  def delete_user(%User{} = user) do
+  def delete_user(%User{} = _user) do
     raise "TODO"
   end
 
@@ -91,7 +88,7 @@ defmodule PiggyBank.Users do
       %Todo{...}
 
   """
-  def change_user(%User{} = user, _attrs \\ %{}) do
+  def change_user(%User{} = _user, _attrs \\ %{}) do
     raise "TODO"
   end
 end

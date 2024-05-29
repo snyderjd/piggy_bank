@@ -113,29 +113,6 @@ defmodule PiggyBank.LedgerEntries do
     |> Repo.transaction()
   end
 
-  # schema "transactions" do
-  #   field :transaction_type, :string
-  #   field :amount, :decimal
-  #   field :date, :naive_datetime
-
-  #   timestamps()
-
-  #   belongs_to :account, Account
-  #   belongs_to :currency, Currency
-  #   belongs_to :ledger_entry, LedgerEntry
-  # end
-
-  # @spec create_account(map()) :: {:ok, Account.t()}
-  # def create_account(attrs \\ %{}) do
-  #   # Create account + insert telemetry data
-  #   Multi.new()
-  #   |> Multi.insert(:account, insert_account_changeset(attrs))
-  #   |> Multi.insert(:app_telemetry, fn %{account: account} ->
-  #     telemetry_for_create_account_changeset(account)
-  #   end)
-  #   |> Repo.transaction()
-  # end
-
   @doc """
   Updates a ledger_entry.
 
@@ -148,7 +125,7 @@ defmodule PiggyBank.LedgerEntries do
       {:error, ...}
 
   """
-  def update_ledger_entry(%LedgerEntry{} = ledger_entry, attrs) do
+  def update_ledger_entry(%LedgerEntry{} = _ledger_entry, _attrs) do
     raise "TODO"
   end
 
@@ -164,7 +141,7 @@ defmodule PiggyBank.LedgerEntries do
       {:error, ...}
 
   """
-  def delete_ledger_entry(%LedgerEntry{} = ledger_entry) do
+  def delete_ledger_entry(%LedgerEntry{} = _ledger_entry) do
     raise "TODO"
   end
 
@@ -177,7 +154,7 @@ defmodule PiggyBank.LedgerEntries do
       %Todo{...}
 
   """
-  def change_ledger_entry(%LedgerEntry{} = ledger_entry, _attrs \\ %{}) do
+  def change_ledger_entry(%LedgerEntry{} = _ledger_entry, _attrs \\ %{}) do
     raise "TODO"
   end
 end

@@ -22,6 +22,7 @@ defmodule PiggyBankWeb.AccountController do
     render(conn, :new, changeset: changeset, account_types: account_types, users: users)
   end
 
+  @spec create(Plug.Conn.t(), map()) :: Plug.Conn.t()
   def create(conn, %{"account" => account_params}) do
     case Accounts.create_account(account_params) do
       {:ok, multi} ->
@@ -34,6 +35,7 @@ defmodule PiggyBankWeb.AccountController do
     end
   end
 
+  @spec show(Plug.Conn.t(), map()) :: Plug.Conn.t()
   def show(conn, %{"id" => id}) do
     account = Accounts.get_account!(id)
     render(conn, :show, account: account)
@@ -42,7 +44,10 @@ defmodule PiggyBankWeb.AccountController do
   def edit(conn, %{"id" => id}) do
     account = Accounts.get_account!(id)
     changeset = Accounts.change_account(account)
-    render(conn, :edit, account: account, changeset: changeset)
+    account_types = Repo.all(AccountType)
+    users = Repo.all(User)
+
+    render(conn, :edit, account: account, changeset: changeset, account_types: account_types, users: users)
   end
 
   def update(conn, %{"id" => id, "account" => account_params}) do

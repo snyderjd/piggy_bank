@@ -9,7 +9,6 @@ defmodule PiggyBank.Transactions.Transaction do
   alias PiggyBank.Accounts.Account
   alias PiggyBank.Currencies.Currency
   alias PiggyBank.LedgerEntries.LedgerEntry
-  alias PiggyBank.Repo
 
   @type t :: %__MODULE__{
           account: Account.t(),
