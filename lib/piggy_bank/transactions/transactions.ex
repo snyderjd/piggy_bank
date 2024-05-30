@@ -8,17 +8,17 @@ defmodule PiggyBank.Transactions do
 
   alias PiggyBank.Transactions.Transaction
 
+  @spec list_transactions() :: [Transaction.t()]
   @doc """
   Returns the list of transactions.
-
   ## Examples
-
       iex> list_transactions()
       [%Transaction{}, ...]
-
   """
   def list_transactions do
-    raise "TODO"
+    Transaction
+    |> preload([:account, :currency])
+    |> Repo.all()
   end
 
   @spec get_transaction!(integer()) :: Transaction.t()
