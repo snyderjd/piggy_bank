@@ -47,17 +47,22 @@ defmodule PiggyBankWeb.AccountController do
     account_types = Repo.all(AccountType)
     users = Repo.all(User)
 
-    render(conn, :edit, account: account, changeset: changeset, account_types: account_types, users: users)
+    render(conn, :edit,
+      account: account,
+      changeset: changeset,
+      account_types: account_types,
+      users: users
+    )
   end
 
   def update(conn, %{"id" => id, "account" => account_params}) do
     account = Accounts.get_account!(id)
 
     case Accounts.update_account(account, account_params) do
-      {:ok, account} ->
+      {:ok, multi} ->
         conn
         |> put_flash(:info, "Account updated successfully.")
-        |> redirect(to: ~p"/accounts/#{account}")
+        |> redirect(to: ~p"/accounts/#{multi.account.id}")
 
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, :edit, account: account, changeset: changeset)

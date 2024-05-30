@@ -87,8 +87,28 @@ defmodule PiggyBank.Accounts do
       iex> update_account(account, %{field: bad_value})
       {:error, ...}
   """
-  def update_account(%Account{} = _account, _attrs) do
-    raise "TODO"
+  def update_account(%Account{} = account, attrs) do
+    # 1. Update account
+    # 2. Insert telemetry for account update
+    Multi.new()
+    |> Multi.update(:account, Account.changeset(account, attrs))
+    |> Multi.insert(:app_telemetry, fn %{account: account} ->
+      telemetry_for_update_account_changeset(account)
+    end)
+    |> Repo.transaction()
+  end
+
+  defp telemetry_for_update_account_changeset(account) do
+    telemetry_params = %{
+      event_name: "update_account",
+      description: "Update Account #{account.name}",
+      metadata: %{name: account.name, account_type_id: account.account_type_id},
+      date: DateTime.utc_now(),
+      account_id: account.id,
+      user_id: account.user_id
+    }
+
+    AppTelemetry.changeset(%AppTelemetry{}, telemetry_params)
   end
 
   @doc """
