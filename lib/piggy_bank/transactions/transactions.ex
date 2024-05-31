@@ -29,7 +29,11 @@ defmodule PiggyBank.Transactions do
       iex> get_transaction!(123)
       %Transaction{}
   """
-  def get_transaction!(id), do: Repo.get!(Transaction, id)
+  def get_transaction!(id) do
+    Transaction
+    |> preload([:account, :currency, :ledger_entry])
+    |> Repo.get!(id)
+  end
 
   @doc """
   Creates a transaction.

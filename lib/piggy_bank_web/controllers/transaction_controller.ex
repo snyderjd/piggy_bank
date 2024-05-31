@@ -27,6 +27,7 @@ defmodule PiggyBankWeb.TransactionController do
     end
   end
 
+  @spec show(Plug.Conn.t(), map()) :: Plug.Conn.t()
   def show(conn, %{"id" => id}) do
     transaction = Transactions.get_transaction!(id)
     render(conn, :show, transaction: transaction)

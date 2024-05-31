@@ -10,4 +10,11 @@ defmodule PiggyBankWeb.TransactionHTML do
   attr :action, :string, required: true
 
   def transaction_form(assigns)
+
+  @spec format_transaction_date(NaiveDateTime.t()) :: binary()
+  def format_transaction_date(transaction_date) do
+    transaction_date
+    |> NaiveDateTime.to_date()
+    |> Date.to_string()
+  end
 end

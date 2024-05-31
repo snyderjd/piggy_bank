@@ -8,7 +8,7 @@
 </.header>
 
 <.table id="transactions" rows={@transactions} row_click={&JS.navigate(~p"/transactions/#{&1}")}>
-  <:col :let={transaction} label="Date"><%= transaction.date %></:col>
+  <:col :let={transaction} label="Date"><%= format_transaction_date(transaction.date) %></:col>
   <:col :let={transaction} label="Account"><%= transaction.account.name %></:col>
   <:col :let={transaction} label="Transaction Type"><%= transaction.transaction_type %></:col>
   <:col :let={transaction} label="Amount"><%= transaction.amount %></:col>
