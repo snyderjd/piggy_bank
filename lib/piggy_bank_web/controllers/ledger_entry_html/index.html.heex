@@ -1,0 +1,28 @@
+<.header>
+  Ledger Entries
+  <:actions>
+    <.link href={~p"/ledger_entries/new"}>
+      <.button>New Ledger entry</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table
+  id="ledger_entries"
+  rows={@ledger_entries}
+  row_click={&JS.navigate(~p"/ledger_entries/#{&1}")}
+>
+  <:col :let={ledger_entry} label="Date"><%= format_entry_date(ledger_entry.date) %></:col>
+  <:col :let={ledger_entry} label="Description"><%= ledger_entry.description %></:col>
+  <:action :let={ledger_entry}>
+    <div class="sr-only">
+      <.link navigate={~p"/ledger_entries/#{ledger_entry}"}>Show</.link>
+    </div>
+    <.link navigate={~p"/ledger_entries/#{ledger_entry}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={ledger_entry}>
+    <.link href={~p"/ledger_entries/#{ledger_entry}"} method="delete" data-confirm="Are you sure?">
+      Delete
+    </.link>
+  </:action>
+</.table>

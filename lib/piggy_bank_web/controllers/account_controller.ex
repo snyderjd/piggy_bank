@@ -3,31 +3,39 @@ defmodule PiggyBankWeb.AccountController do
 
   alias PiggyBank.Accounts
   alias PiggyBank.Accounts.Account
+  alias PiggyBank.AccountTypes.AccountType
+  alias PiggyBank.Repo
+  alias PiggyBank.Users.User
 
   @spec index(Plug.Conn.t(), map()) :: Plug.Conn.t()
   def index(conn, _params) do
     accounts = Accounts.list_accounts()
-    IO.inspect(accounts, label: "accounts")
     render(conn, :index, accounts: accounts)
   end
 
+  @spec new(Plug.Conn.t(), map()) :: Plug.Conn.t()
   def new(conn, _params) do
     changeset = Accounts.change_account(%Account{})
-    render(conn, :new, changeset: changeset)
+    account_types = Repo.all(AccountType)
+    users = Repo.all(User)
+
+    render(conn, :new, changeset: changeset, account_types: account_types, users: users)
   end
 
+  @spec create(Plug.Conn.t(), map()) :: Plug.Conn.t()
   def create(conn, %{"account" => account_params}) do
     case Accounts.create_account(account_params) do
-      {:ok, account} ->
+      {:ok, multi} ->
         conn
         |> put_flash(:info, "Account created successfully.")
-        |> redirect(to: ~p"/accounts/#{account}")
+        |> redirect(to: ~p"/accounts/#{multi.account.id}")
 
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, :new, changeset: changeset)
     end
   end
 
+  @spec show(Plug.Conn.t(), map()) :: Plug.Conn.t()
   def show(conn, %{"id" => id}) do
     account = Accounts.get_account!(id)
     render(conn, :show, account: account)
@@ -36,17 +44,25 @@ defmodule PiggyBankWeb.AccountController do
   def edit(conn, %{"id" => id}) do
     account = Accounts.get_account!(id)
     changeset = Accounts.change_account(account)
-    render(conn, :edit, account: account, changeset: changeset)
+    account_types = Repo.all(AccountType)
+    users = Repo.all(User)
+
+    render(conn, :edit,
+      account: account,
+      changeset: changeset,
+      account_types: account_types,
+      users: users
+    )
   end
 
   def update(conn, %{"id" => id, "account" => account_params}) do
     account = Accounts.get_account!(id)
 
     case Accounts.update_account(account, account_params) do
-      {:ok, account} ->
+      {:ok, multi} ->
         conn
         |> put_flash(:info, "Account updated successfully.")
-        |> redirect(to: ~p"/accounts/#{account}")
+        |> redirect(to: ~p"/accounts/#{multi.account.id}")
 
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, :edit, account: account, changeset: changeset)

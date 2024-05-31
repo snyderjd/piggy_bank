@@ -1,4 +1,4 @@
-defmodule PiggyBank.Transaction do
+defmodule PiggyBank.Transactions.Transaction do
   @moduledoc """
   Schema and relationships for transactions
   """
@@ -7,7 +7,8 @@ defmodule PiggyBank.Transaction do
 
   alias Ecto.Changeset
   alias PiggyBank.Accounts.Account
-  alias PiggyBank.{Currency, LedgerEntry}
+  alias PiggyBank.Currencies.Currency
+  alias PiggyBank.LedgerEntries.LedgerEntry
 
   @type t :: %__MODULE__{
           account: Account.t(),
@@ -35,8 +36,9 @@ defmodule PiggyBank.Transaction do
     struct
     |> Changeset.cast(params, [:transaction_type, :amount, :date])
     |> Changeset.validate_required([:transaction_type, :amount, :date])
-    |> Changeset.cast_assoc(:account, required: true)
-    |> Changeset.cast_assoc(:currency, required: true)
-    |> Changeset.cast_assoc(:ledger_entry, required: true)
+    |> Changeset.validate_inclusion(:transaction_type, ["debit", "credit"])
+    |> Changeset.put_assoc(:account, params.account, required: true)
+    |> Changeset.put_assoc(:currency, params.currency, required: true)
+    |> Changeset.put_assoc(:ledger_entry, params.ledger_entry, required: true)
   end
 end

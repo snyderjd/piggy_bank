@@ -1,5 +1,5 @@
 <.header>
-  Account <%= @account.id %>
+  Account: <%= @account.name %>
   <:subtitle>This is a account record from your database.</:subtitle>
   <:actions>
     <.link href={~p"/accounts/#{@account}/edit"}>
@@ -9,6 +9,10 @@
 </.header>
 
 <.list>
+  <:item title="Name"><%= @account.name %></:item>
+  <:item title="Account Type"><%= @account.account_type.name %></:item>
+  <:item title="User"><%= render_account_user(@account) %></:item>
+  <:item title="USD Balance"><%= @account.usd_current_balance %></:item>
 </.list>
 
 <.back navigate={~p"/accounts"}>Back to accounts</.back>

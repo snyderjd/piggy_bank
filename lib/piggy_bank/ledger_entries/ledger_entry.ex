@@ -1,4 +1,4 @@
-defmodule PiggyBank.LedgerEntry do
+defmodule PiggyBank.LedgerEntries.LedgerEntry do
   @moduledoc """
   Schema and relationships for ledger_entries
   """
@@ -6,7 +6,7 @@ defmodule PiggyBank.LedgerEntry do
   use Ecto.Schema
 
   alias Ecto.Changeset
-  alias PiggyBank.Transaction
+  alias PiggyBank.Transactions.Transaction
 
   @type t :: %__MODULE__{
           description: String.t(),

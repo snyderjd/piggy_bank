@@ -1,0 +1,26 @@
+<.header>
+  Listing App telemetry
+  <:actions>
+    <.link href={~p"/app_telemetry/new"}>
+      <.button>New App telemetry</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table
+  id="app_telemetry"
+  rows={@app_telemetry_collection}
+  row_click={&JS.navigate(~p"/app_telemetry/#{&1}")}
+>
+  <:action :let={app_telemetry}>
+    <div class="sr-only">
+      <.link navigate={~p"/app_telemetry/#{app_telemetry}"}>Show</.link>
+    </div>
+    <.link navigate={~p"/app_telemetry/#{app_telemetry}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={app_telemetry}>
+    <.link href={~p"/app_telemetry/#{app_telemetry}"} method="delete" data-confirm="Are you sure?">
+      Delete
+    </.link>
+  </:action>
+</.table>

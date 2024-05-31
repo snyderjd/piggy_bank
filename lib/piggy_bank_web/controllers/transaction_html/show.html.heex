@@ -1,0 +1,19 @@
+<.header>
+  Transaction Details
+  <:subtitle>This is a transaction record from your database.</:subtitle>
+  <:actions>
+    <.link href={~p"/transactions/#{@transaction}/edit"}>
+      <.button>Edit transaction</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="Date"><%= format_transaction_date(@transaction.date) %></:item>
+  <:item title="Account"><%= @transaction.account.name %></:item>
+  <:item title="Transaction Type"><%= @transaction.transaction_type %></:item>
+  <:item title="Amount"><%= "#{@transaction.currency.code} #{@transaction.amount}" %></:item>
+  <:item title="Ledger Entry"><%= @transaction.ledger_entry.description %></:item>
+</.list>
+
+<.back navigate={~p"/transactions"}>Back to transactions</.back>

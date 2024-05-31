@@ -10,9 +10,7 @@ defmodule PiggyBank.AccountTypesFixtures do
   def account_type_fixture(attrs \\ %{}) do
     {:ok, account_type} =
       attrs
-      |> Enum.into(%{
-
-      })
+      |> Enum.into(%{})
       |> PiggyBank.AccountTypes.create_account_type()
 
     account_type
