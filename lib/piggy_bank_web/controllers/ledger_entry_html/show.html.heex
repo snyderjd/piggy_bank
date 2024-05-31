@@ -1,5 +1,5 @@
 <.header>
-  Ledger entry <%= @ledger_entry.id %>
+  Ledger Entry Details
   <:subtitle>This is a ledger_entry record from your database.</:subtitle>
   <:actions>
     <.link href={~p"/ledger_entries/#{@ledger_entry}/edit"}>
@@ -8,6 +8,27 @@
   </:actions>
 </.header>
 
-<.list></.list>
+<.list>
+  <:item title="Date"><%= format_entry_date(@ledger_entry.date) %></:item>
+  <:item title="Description"><%= @ledger_entry.description %></:item>
+</.list>
+
+<h1 class="text-lg font-semibold leading-8 text-zinc-800 mt-10">Transactions</h1>
+
+<.table
+  id="transactions"
+  rows={@ledger_entry.transactions}
+  row_click={&JS.navigate(~p"/transactions/#{&1}")}
+>
+  <:col :let={transaction} label="Date"><%= format_entry_date(transaction.date) %></:col>
+  <:col :let={transaction} label="Account"><%= transaction.account.name %></:col>
+  <:col :let={transaction} label="Transaction Type"><%= transaction.transaction_type %></:col>
+  <:col :let={transaction} label="Amount"><%= transaction.amount %></:col>
+  <:action :let={transaction}>
+    <div class="sr-only">
+      <.link navigate={~p"/transactions/#{transaction}"}>Show</.link>
+    </div>
+  </:action>
+</.table>
 
 <.back navigate={~p"/ledger_entries"}>Back to ledger_entries</.back>

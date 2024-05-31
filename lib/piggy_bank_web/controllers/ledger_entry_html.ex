@@ -10,4 +10,11 @@ defmodule PiggyBankWeb.LedgerEntryHTML do
   attr :action, :string, required: true
 
   def ledger_entry_form(assigns)
+
+  @spec format_entry_date(NaiveDateTime.t()) :: binary()
+  def format_entry_date(datetime) do
+    datetime
+    |> NaiveDateTime.to_date()
+    |> Date.to_string()
+  end
 end

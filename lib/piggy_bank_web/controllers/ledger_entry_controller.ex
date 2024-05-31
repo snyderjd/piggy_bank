@@ -4,16 +4,19 @@ defmodule PiggyBankWeb.LedgerEntryController do
   alias PiggyBank.LedgerEntries
   alias PiggyBank.LedgerEntries.LedgerEntry
 
+  @spec index(Plug.Conn.t(), map()) :: Plug.Conn.t()
   def index(conn, _params) do
     ledger_entries = LedgerEntries.list_ledger_entries()
     render(conn, :index, ledger_entries: ledger_entries)
   end
 
+  @spec new(Plug.Conn.t(), map()) :: Plug.Conn.t()
   def new(conn, _params) do
     changeset = LedgerEntries.change_ledger_entry(%LedgerEntry{})
     render(conn, :new, changeset: changeset)
   end
 
+  @spec create(Plug.Conn.t(), map()) :: Plug.Conn.t()
   def create(conn, %{"ledger_entry" => ledger_entry_params}) do
     case LedgerEntries.create_ledger_entry(ledger_entry_params) do
       {:ok, ledger_entry} ->
@@ -26,6 +29,7 @@ defmodule PiggyBankWeb.LedgerEntryController do
     end
   end
 
+  @spec show(Plug.Conn.t(), map()) :: Plug.Conn.t()
   def show(conn, %{"id" => id}) do
     ledger_entry = LedgerEntries.get_ledger_entry!(id)
     render(conn, :show, ledger_entry: ledger_entry)

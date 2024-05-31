@@ -33,7 +33,11 @@ defmodule PiggyBank.LedgerEntries do
       iex> get_ledger_entry!(123)
       %LedgerEntry{}
   """
-  def get_ledger_entry!(id), do: Repo.get!(LedgerEntry, id)
+  def get_ledger_entry!(id) do
+    LedgerEntry
+    |> preload(transactions: [:account, :currency])
+    |> Repo.get!(id)
+  end
 
   @doc """
   Creates a ledger_entry.
