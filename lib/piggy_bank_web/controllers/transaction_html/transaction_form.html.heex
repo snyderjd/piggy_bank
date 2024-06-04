@@ -3,7 +3,40 @@
     Oops, something went wrong! Please check the errors below.
   </.error>
 
+  <.input
+    type="text"
+    label="Transaction Type"
+    field={f[:transaction_type]}
+    placeholder="debit/credit"
+  />
+  <.input type="text" label="Amount" field={f[:amount]} />
+  <.input type="date" label="Date" field={f[:date]} />
+
   <:actions>
     <.button>Save Transaction</.button>
   </:actions>
 </.simple_form>
+
+<%!-- <.simple_form :let={f} for={@changeset} action={@action}>
+  <.error :if={@changeset.action}>
+    Oops, something went wrong! Please check the errors below.
+  </.error>
+
+  <.input field={f[:name]} label="Name" />
+  <.input
+    field={f[:account_type_id]}
+    label="Account Type"
+    type="select"
+    options={Enum.map(@account_types, fn at -> {at.name, at.id} end)}
+  />
+  <.input
+    field={f[:user_id]}
+    label="User"
+    type="select"
+    options={[{"None", ""} | Enum.map(@users, fn u -> {u.name, u.id} end)]}
+  />
+
+  <:actions>
+    <.button>Save Account</.button>
+  </:actions>
+</.simple_form> --%>

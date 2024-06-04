@@ -8,18 +8,26 @@ defmodule PiggyBank.Transactions do
 
   alias PiggyBank.Transactions.Transaction
 
-  @spec list_transactions() :: [Transaction.t()]
+  @spec list_transactions(map()) :: [Transaction.t()]
   @doc """
   Returns the list of transactions.
   ## Examples
       iex> list_transactions()
       [%Transaction{}, ...]
   """
-  def list_transactions do
-    Transaction
+  def list_transactions(params \\ %{}) do
+    from(t in Transaction, as: :t)
+    |> filter_by_ledger_entry(params)
     |> preload([:account, :currency])
     |> Repo.all()
   end
+
+  defp filter_by_ledger_entry(query, %{"ledger_entry_id" => ledger_entry_id} = _params) do
+    query
+    |> where([t], t.ledger_entry_id == ^ledger_entry_id)
+  end
+
+  defp filter_by_ledger_entry(query, _params), do: query
 
   @spec get_transaction!(integer()) :: Transaction.t()
   @doc """

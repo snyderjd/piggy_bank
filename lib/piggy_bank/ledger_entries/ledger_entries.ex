@@ -4,7 +4,7 @@ defmodule PiggyBank.LedgerEntries do
   """
 
   import Ecto.Query, warn: false
-  alias Ecto.Multi
+  alias Ecto.{Changeset, Multi}
   alias PiggyBank.Repo
   alias PiggyBank.LedgerEntries.LedgerEntry
   alias PiggyBank.Transactions.Transaction
@@ -151,14 +151,12 @@ defmodule PiggyBank.LedgerEntries do
 
   @doc """
   Returns a data structure for tracking ledger_entry changes.
-
   ## Examples
-
       iex> change_ledger_entry(ledger_entry)
       %Todo{...}
-
   """
-  def change_ledger_entry(%LedgerEntry{} = _ledger_entry, _attrs \\ %{}) do
-    raise "TODO"
+  @spec change_ledger_entry(LedgerEntry.t(), map()) :: Changeset.t()
+  def change_ledger_entry(%LedgerEntry{} = ledger_entry, attrs \\ %{}) do
+    LedgerEntry.changeset(ledger_entry, attrs)
   end
 end

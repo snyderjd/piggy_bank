@@ -1,8 +1,9 @@
 defmodule PiggyBankWeb.LedgerEntryController do
   use PiggyBankWeb, :controller
 
-  alias PiggyBank.LedgerEntries
+  alias PiggyBank.{Accounts, Currencies, LedgerEntries, Transactions}
   alias PiggyBank.LedgerEntries.LedgerEntry
+  alias PiggyBank.Transactions.Transaction
 
   @spec index(Plug.Conn.t(), map()) :: Plug.Conn.t()
   def index(conn, _params) do
@@ -12,8 +13,18 @@ defmodule PiggyBankWeb.LedgerEntryController do
 
   @spec new(Plug.Conn.t(), map()) :: Plug.Conn.t()
   def new(conn, _params) do
-    changeset = LedgerEntries.change_ledger_entry(%LedgerEntry{})
-    render(conn, :new, changeset: changeset)
+    accounts = Accounts.list_accounts()
+    currencies = Currencies.list_currencies()
+    transactions = [%Transaction{}, %Transaction{}]
+
+    changeset = LedgerEntries.change_ledger_entry(%LedgerEntry{transactions: transactions})
+
+    render(conn, :new,
+      changeset: changeset,
+      accounts: accounts,
+      currencies: currencies,
+      transactions: transactions
+    )
   end
 
   @spec create(Plug.Conn.t(), map()) :: Plug.Conn.t()

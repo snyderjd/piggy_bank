@@ -3,6 +3,32 @@
     Oops, something went wrong! Please check the errors below.
   </.error>
 
+  <.input field={f[:date]} label="Date" type="date" />
+
+  <.inputs_for :let={t} field={f[:transactions]}>
+    <%!-- Add a header for each transaction, like <h3>Transaction</h3> or something --%>
+    <.input
+      type="text"
+      label="Transaction Type"
+      field={t[:transaction_type]}
+      placeholder="debit/credit"
+    />
+    <.input
+      field={f[:currency_id]}
+      label="Currency"
+      type="select"
+      options={Enum.map(@currencies, fn c -> {c.name, c.id} end)}
+    />
+    <.input type="text" label="Amount" field={t[:amount]} />
+    <.input type="date" label="Date" field={t[:date]} />
+    <.input
+      field={f[:account_id]}
+      label="Account"
+      type="select"
+      options={Enum.map(@accounts, fn a -> {a.name, a.id} end)}
+    />
+  </.inputs_for>
+
   <:actions>
     <.button>Save Ledger entry</.button>
   </:actions>

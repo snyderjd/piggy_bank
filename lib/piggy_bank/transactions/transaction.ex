@@ -37,8 +37,26 @@ defmodule PiggyBank.Transactions.Transaction do
     |> Changeset.cast(params, [:transaction_type, :amount, :date])
     |> Changeset.validate_required([:transaction_type, :amount, :date])
     |> Changeset.validate_inclusion(:transaction_type, ["debit", "credit"])
-    |> Changeset.put_assoc(:account, params.account, required: true)
-    |> Changeset.put_assoc(:currency, params.currency, required: true)
-    |> Changeset.put_assoc(:ledger_entry, params.ledger_entry, required: true)
+    |> add_account_association(params)
+    |> add_currency_association(params)
+    |> add_ledger_entry_association(params)
   end
+
+  defp add_account_association(changeset, %{account: account}) do
+    Changeset.put_assoc(changeset, :account, account)
+  end
+
+  defp add_account_association(changeset, _params), do: changeset
+
+  defp add_currency_association(changeset, %{currency: currency}) do
+    Changeset.put_assoc(changeset, :currency, currency)
+  end
+
+  defp add_currency_association(changeset, _params), do: changeset
+
+  defp add_ledger_entry_association(changeset, %{ledger_entry: ledger_entry}) do
+    Changeset.put_assoc(changeset, :ledger_entry, ledger_entry)
+  end
+
+  defp add_ledger_entry_association(changeset, _params), do: changeset
 end
