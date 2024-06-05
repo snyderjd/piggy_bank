@@ -48,19 +48,21 @@ defmodule PiggyBank.LedgerEntries do
       {:error, ...}
   """
   def create_ledger_entry(attrs \\ %{}) do
-    # Need to do all of the following to create a valid ledger_entry
-    #   - Insert the ledger_entry
-    #   - Insert the relevant transactions
-    #   - Validate the transactions/ledger_entry (debits == credits, assets == liabilities, etc.)
-    #   - Insert telemetry
-    #   - Commit the transaction
     Multi.new()
-    |> Multi.insert(:ledger_entry, LedgerEntry.changeset(%LedgerEntry{}, attrs.ledger_entry))
+    |> Multi.insert(:ledger_entry, LedgerEntry.changeset(%LedgerEntry{}, attrs))
     |> Multi.run(:transactions, fn repo, %{ledger_entry: ledger_entry} ->
       transactions =
-        attrs.transactions
+        attrs["transactions"]
+        |> Map.values()
         |> Enum.map(fn t ->
-          params = Map.put(t, :ledger_entry, ledger_entry)
+          params = %{
+            account_id: t["account_id"],
+            amount: t["amount"],
+            currency_id: t["currency_id"],
+            date: t["date"],
+            transaction_type: t["transaction_type"],
+            ledger_entry: ledger_entry
+          }
 
           %Transaction{}
           |> Transaction.changeset(params)
