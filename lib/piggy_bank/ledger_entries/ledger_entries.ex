@@ -50,46 +50,14 @@ defmodule PiggyBank.LedgerEntries do
   def create_ledger_entry(attrs \\ %{}) do
     Multi.new()
     |> Multi.insert(:ledger_entry, LedgerEntry.changeset(%LedgerEntry{}, attrs))
-    |> Multi.run(:transactions, fn repo, %{ledger_entry: ledger_entry} ->
-      transactions =
-        attrs["transactions"]
-        |> Map.values()
-        |> Enum.map(fn t ->
-          params = %{
-            account_id: t["account_id"],
-            amount: t["amount"],
-            currency_id: t["currency_id"],
-            date: t["date"],
-            transaction_type: t["transaction_type"],
-            ledger_entry: ledger_entry
-          }
-
-          %Transaction{}
-          |> Transaction.changeset(params)
-          |> repo.insert!()
-        end)
-
-      {:ok, transactions}
-    end)
     |> Multi.insert(:ledger_entry_telemetry, fn %{ledger_entry: ledger_entry} ->
-      telemetry_params = %{
-        event_name: "create_ledger_entry",
-        description: "Create Ledger Entry #{ledger_entry.description}",
-        metadata: %{
-          id: ledger_entry.id,
-          description: ledger_entry.description,
-          date: ledger_entry.date
-        },
-        date: DateTime.utc_now(),
-        account: nil,
-        user: nil
-      }
+      telemetry_params = build_ledger_entry_telemetry_params(:create, ledger_entry)
 
       AppTelemetry.changeset(%AppTelemetry{}, telemetry_params)
     end)
-    |> Multi.run(:transactions_telemetry, fn repo, %{transactions: transactions} ->
+    |> Multi.run(:transactions_telemetry, fn repo, %{ledger_entry: ledger_entry} ->
       telemetry_records =
-        Enum.map(transactions, fn transaction ->
+        Enum.map(ledger_entry.transactions, fn transaction ->
           t = repo.preload(transaction, account: :user)
 
           params = %{
@@ -117,6 +85,27 @@ defmodule PiggyBank.LedgerEntries do
       {:ok, telemetry_records}
     end)
     |> Repo.transaction()
+  end
+
+  defp build_ledger_entry_telemetry_params(action, ledger_entry) do
+    {event_name, description} =
+      case action do
+        :create ->
+          {"create_ledger_entry", "Create Ledger Entry #{ledger_entry.description}"}
+      end
+
+    %{
+      event_name: event_name,
+      description: description,
+      metadata: %{
+        id: ledger_entry.id,
+        description: ledger_entry.description,
+        date: ledger_entry.date
+      },
+      date: DateTime.utc_now(),
+      account: nil,
+      user: nil
+    }
   end
 
   @doc """
