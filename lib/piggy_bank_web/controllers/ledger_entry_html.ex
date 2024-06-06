@@ -8,6 +8,9 @@ defmodule PiggyBankWeb.LedgerEntryHTML do
   """
   attr :changeset, Ecto.Changeset, required: true
   attr :action, :string, required: true
+  attr :transactions, :list
+  attr :accounts, :list
+  attr :currencies, :list
 
   def ledger_entry_form(assigns)
 

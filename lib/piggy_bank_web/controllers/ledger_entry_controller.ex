@@ -1,8 +1,9 @@
 defmodule PiggyBankWeb.LedgerEntryController do
   use PiggyBankWeb, :controller
 
-  alias PiggyBank.LedgerEntries
+  alias PiggyBank.{Accounts, Currencies, LedgerEntries, Transactions}
   alias PiggyBank.LedgerEntries.LedgerEntry
+  alias PiggyBank.Transactions.Transaction
 
   @spec index(Plug.Conn.t(), map()) :: Plug.Conn.t()
   def index(conn, _params) do
@@ -12,17 +13,27 @@ defmodule PiggyBankWeb.LedgerEntryController do
 
   @spec new(Plug.Conn.t(), map()) :: Plug.Conn.t()
   def new(conn, _params) do
-    changeset = LedgerEntries.change_ledger_entry(%LedgerEntry{})
-    render(conn, :new, changeset: changeset)
+    accounts = Accounts.list_accounts()
+    currencies = Currencies.list_currencies()
+    transactions = [%Transaction{}, %Transaction{}]
+
+    changeset = LedgerEntries.change_ledger_entry(%LedgerEntry{transactions: transactions})
+
+    render(conn, :new,
+      changeset: changeset,
+      accounts: accounts,
+      currencies: currencies,
+      transactions: transactions
+    )
   end
 
   @spec create(Plug.Conn.t(), map()) :: Plug.Conn.t()
   def create(conn, %{"ledger_entry" => ledger_entry_params}) do
     case LedgerEntries.create_ledger_entry(ledger_entry_params) do
-      {:ok, ledger_entry} ->
+      {:ok, multi} ->
         conn
         |> put_flash(:info, "Ledger entry created successfully.")
-        |> redirect(to: ~p"/ledger_entries/#{ledger_entry}")
+        |> redirect(to: ~p"/ledger_entries/#{multi.ledger_entry}")
 
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, :new, changeset: changeset)

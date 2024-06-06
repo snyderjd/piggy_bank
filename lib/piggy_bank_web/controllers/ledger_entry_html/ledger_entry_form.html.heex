@@ -3,6 +3,34 @@
     Oops, something went wrong! Please check the errors below.
   </.error>
 
+  <.input field={f[:date]} label="Date" type="datetime-local" />
+  <.input field={f[:description]} label="Description" type="text" /> 
+
+  <.inputs_for :let={t} field={f[:transactions]}>
+    <.header>Transaction</.header>
+    <.input type="datetime-local" label="Date" field={t[:date]} />
+    <.input
+      label="Transaction Type"
+      field={t[:transaction_type]}
+      placeholder="debit/credit"
+      type="select"
+      options={["debit", "credit"]}
+    />
+    <.input
+      field={t[:account_id]}
+      label="Account"
+      type="select"
+      options={Enum.map(@accounts, fn a -> {a.name, a.id} end)}
+    />
+    <.input
+      field={t[:currency_id]}
+      label="Currency"
+      type="select"
+      options={Enum.map(@currencies, fn c -> {c.name, c.id} end)}
+    />
+    <.input type="text" label="Amount" field={t[:amount]} />
+  </.inputs_for>
+
   <:actions>
     <.button>Save Ledger entry</.button>
   </:actions>

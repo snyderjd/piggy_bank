@@ -44,7 +44,7 @@ defmodule PiggyBank.Accounts do
       iex> create_account(%{field: bad_value})
       {:error, ...}
   """
-  @spec create_account(map()) :: {:ok, Account.t()}
+  @spec create_account(map()) :: {:ok, map()} | {:error, any()}
   def create_account(attrs \\ %{}) do
     # Create account + insert telemetry data
     Multi.new()

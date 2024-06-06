@@ -4,7 +4,7 @@ defmodule PiggyBank.LedgerEntries do
   """
 
   import Ecto.Query, warn: false
-  alias Ecto.Multi
+  alias Ecto.{Changeset, Multi}
   alias PiggyBank.Repo
   alias PiggyBank.LedgerEntries.LedgerEntry
   alias PiggyBank.Transactions.Transaction
@@ -47,65 +47,20 @@ defmodule PiggyBank.LedgerEntries do
       iex> create_ledger_entry(%{field: bad_value})
       {:error, ...}
   """
+  @spec create_ledger_entry(map()) :: {:ok, map()} | {:error, any()}
   def create_ledger_entry(attrs \\ %{}) do
-    # Need to do all of the following to create a valid ledger_entry
-    #   - Insert the ledger_entry
-    #   - Insert the relevant transactions
-    #   - Validate the transactions/ledger_entry (debits == credits, assets == liabilities, etc.)
-    #   - Insert telemetry
-    #   - Commit the transaction
     Multi.new()
-    |> Multi.insert(:ledger_entry, LedgerEntry.changeset(%LedgerEntry{}, attrs.ledger_entry))
-    |> Multi.run(:transactions, fn repo, %{ledger_entry: ledger_entry} ->
-      transactions =
-        attrs.transactions
-        |> Enum.map(fn t ->
-          params = Map.put(t, :ledger_entry, ledger_entry)
-
-          %Transaction{}
-          |> Transaction.changeset(params)
-          |> repo.insert!()
-        end)
-
-      {:ok, transactions}
-    end)
+    |> Multi.insert(:ledger_entry, LedgerEntry.changeset(%LedgerEntry{}, attrs))
     |> Multi.insert(:ledger_entry_telemetry, fn %{ledger_entry: ledger_entry} ->
-      telemetry_params = %{
-        event_name: "create_ledger_entry",
-        description: "Create Ledger Entry #{ledger_entry.description}",
-        metadata: %{
-          id: ledger_entry.id,
-          description: ledger_entry.description,
-          date: ledger_entry.date
-        },
-        date: DateTime.utc_now(),
-        account: nil,
-        user: nil
-      }
+      telemetry_params = build_ledger_entry_telemetry_params(:create, ledger_entry)
 
       AppTelemetry.changeset(%AppTelemetry{}, telemetry_params)
     end)
-    |> Multi.run(:transactions_telemetry, fn repo, %{transactions: transactions} ->
+    |> Multi.run(:transactions_telemetry, fn repo, %{ledger_entry: ledger_entry} ->
       telemetry_records =
-        Enum.map(transactions, fn transaction ->
+        Enum.map(ledger_entry.transactions, fn transaction ->
           t = repo.preload(transaction, account: :user)
-
-          params = %{
-            event_name: "create_transaction",
-            description: "Create Transaction #{t.transaction_type} #{t.account.name} #{t.amount}",
-            metadata: %{
-              id: t.id,
-              transaction_type: t.transaction_type,
-              amount: t.amount,
-              date: t.date,
-              account_id: t.account_id,
-              currency_id: t.currency_id,
-              ledger_entry_id: t.ledger_entry_id
-            },
-            date: t.date,
-            account: t.account,
-            user: t.account.user
-          }
+          params = build_transaction_telemetry_params(:create, t)
 
           %AppTelemetry{}
           |> AppTelemetry.changeset(params)
@@ -115,6 +70,52 @@ defmodule PiggyBank.LedgerEntries do
       {:ok, telemetry_records}
     end)
     |> Repo.transaction()
+  end
+
+  defp build_ledger_entry_telemetry_params(action, ledger_entry) do
+    {event_name, description} =
+      case action do
+        :create ->
+          {"create_ledger_entry", "Create Ledger Entry #{ledger_entry.description}"}
+      end
+
+    %{
+      event_name: event_name,
+      description: description,
+      metadata: %{
+        id: ledger_entry.id,
+        description: ledger_entry.description,
+        date: ledger_entry.date
+      },
+      date: DateTime.utc_now(),
+      account: nil,
+      user: nil
+    }
+  end
+
+  defp build_transaction_telemetry_params(action, transaction) do
+    {event_name, description} =
+      case action do
+        :create ->
+          {"create_transaction", "Create Transaction #{transaction.transaction_type} #{transaction.account.name} #{transaction.amount}"}
+      end
+
+    %{
+      event_name: event_name,
+      description: description,
+      metadata: %{
+        id: transaction.id,
+        transaction_type: transaction.transaction_type,
+        amount: transaction.amount,
+        date: transaction.date,
+        account_id: transaction.account_id,
+        currency_id: transaction.currency_id,
+        ledger_entry_id: transaction.ledger_entry_id
+      },
+      date: transaction.date,
+      account_id: transaction.account_id,
+      user_id: transaction.account.user_id
+    }
   end
 
   @doc """
@@ -151,14 +152,12 @@ defmodule PiggyBank.LedgerEntries do
 
   @doc """
   Returns a data structure for tracking ledger_entry changes.
-
   ## Examples
-
       iex> change_ledger_entry(ledger_entry)
       %Todo{...}
-
   """
-  def change_ledger_entry(%LedgerEntry{} = _ledger_entry, _attrs \\ %{}) do
-    raise "TODO"
+  @spec change_ledger_entry(LedgerEntry.t(), map()) :: Changeset.t()
+  def change_ledger_entry(%LedgerEntry{} = ledger_entry, attrs \\ %{}) do
+    LedgerEntry.changeset(ledger_entry, attrs)
   end
 end

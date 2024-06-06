@@ -10,18 +10,15 @@ defmodule PiggyBank.Currencies do
 
   @doc """
   Returns the list of currencies.
-
   ## Examples
-
       iex> list_currencies()
       [%Currency{}, ...]
-
   """
+  @spec list_currencies() :: [Currency.t()]
   def list_currencies do
-    raise "TODO"
+    Repo.all(Currency)
   end
 
-  @spec get_currency!(integer()) :: Currency.t()
   @doc """
   Gets a single currency.
   Raises if the Currency does not exist.
@@ -29,6 +26,7 @@ defmodule PiggyBank.Currencies do
       iex> get_currency!(123)
       %Currency{}
   """
+  @spec get_currency!(integer()) :: Currency.t()
   def get_currency!(id), do: Repo.get!(Currency, id)
 
   @doc """

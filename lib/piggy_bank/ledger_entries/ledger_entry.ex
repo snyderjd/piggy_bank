@@ -20,12 +20,13 @@ defmodule PiggyBank.LedgerEntries.LedgerEntry do
 
     timestamps()
 
-    has_many :transactions, Transaction
+    has_many :transactions, Transaction, on_replace: :delete
   end
 
   def changeset(struct, params \\ %{}) do
     struct
     |> Changeset.cast(params, [:description, :date])
     |> Changeset.validate_required([:description, :date])
+    |> Changeset.cast_assoc(:transactions, with: &Transaction.changeset/2)
   end
 end

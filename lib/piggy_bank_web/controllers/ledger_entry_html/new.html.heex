@@ -3,6 +3,26 @@
   <:subtitle>Use this form to manage ledger_entry records in your database.</:subtitle>
 </.header>
 
-<.ledger_entry_form changeset={@changeset} action={~p"/ledger_entries"} />
+<.ledger_entry_form
+  changeset={@changeset}
+  action={~p"/ledger_entries"}
+  accounts={@accounts}
+  transactions={@transactions}
+  currencies={@currencies}
+/>
 
 <.back navigate={~p"/ledger_entries"}>Back to ledger_entries</.back>
+
+<%!-- <.header>
+  New Account
+  <:subtitle>Use this form to manage account records in your database.</:subtitle>
+</.header>
+
+<.account_form
+  changeset={@changeset}
+  account_types={@account_types}
+  users={@users}
+  action={~p"/accounts"}
+/>
+
+<.back navigate={~p"/accounts"}>Back to accounts</.back> --%>
