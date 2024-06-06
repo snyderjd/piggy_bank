@@ -47,6 +47,7 @@ defmodule PiggyBank.LedgerEntries do
       iex> create_ledger_entry(%{field: bad_value})
       {:error, ...}
   """
+  @spec create_ledger_entry(map()) :: {:ok, map()} | {:error, any()}
   def create_ledger_entry(attrs \\ %{}) do
     Multi.new()
     |> Multi.insert(:ledger_entry, LedgerEntry.changeset(%LedgerEntry{}, attrs))
@@ -59,23 +60,7 @@ defmodule PiggyBank.LedgerEntries do
       telemetry_records =
         Enum.map(ledger_entry.transactions, fn transaction ->
           t = repo.preload(transaction, account: :user)
-
-          params = %{
-            event_name: "create_transaction",
-            description: "Create Transaction #{t.transaction_type} #{t.account.name} #{t.amount}",
-            metadata: %{
-              id: t.id,
-              transaction_type: t.transaction_type,
-              amount: t.amount,
-              date: t.date,
-              account_id: t.account_id,
-              currency_id: t.currency_id,
-              ledger_entry_id: t.ledger_entry_id
-            },
-            date: t.date,
-            account: t.account,
-            user: t.account.user
-          }
+          params = build_transaction_telemetry_params(:create, t)
 
           %AppTelemetry{}
           |> AppTelemetry.changeset(params)
@@ -105,6 +90,31 @@ defmodule PiggyBank.LedgerEntries do
       date: DateTime.utc_now(),
       account: nil,
       user: nil
+    }
+  end
+
+  defp build_transaction_telemetry_params(action, transaction) do
+    {event_name, description} =
+      case action do
+        :create ->
+          {"create_transaction", "Create Transaction #{transaction.transaction_type} #{transaction.account.name} #{transaction.amount}"}
+      end
+
+    %{
+      event_name: event_name,
+      description: description,
+      metadata: %{
+        id: transaction.id,
+        transaction_type: transaction.transaction_type,
+        amount: transaction.amount,
+        date: transaction.date,
+        account_id: transaction.account_id,
+        currency_id: transaction.currency_id,
+        ledger_entry_id: transaction.ledger_entry_id
+      },
+      date: transaction.date,
+      account_id: transaction.account_id,
+      user_id: transaction.account.user_id
     }
   end
 
