@@ -7,7 +7,6 @@ defmodule PiggyBank.LedgerEntries do
   alias Ecto.{Changeset, Multi}
   alias PiggyBank.Repo
   alias PiggyBank.LedgerEntries.LedgerEntry
-  alias PiggyBank.Transactions.Transaction
   alias PiggyBank.AppTelemetryContext.AppTelemetry
 
   @spec list_ledger_entries :: [LedgerEntry.t()]
@@ -97,7 +96,8 @@ defmodule PiggyBank.LedgerEntries do
     {event_name, description} =
       case action do
         :create ->
-          {"create_transaction", "Create Transaction #{transaction.transaction_type} #{transaction.account.name} #{transaction.amount}"}
+          {"create_transaction",
+           "Create Transaction #{transaction.transaction_type} #{transaction.account.name} #{transaction.amount}"}
       end
 
     %{

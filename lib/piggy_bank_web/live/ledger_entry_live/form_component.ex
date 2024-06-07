@@ -5,6 +5,9 @@ defmodule PiggyBankWeb.LedgerEntryLive.FormComponent do
 
   @impl true
   def render(assigns) do
+    IO.inspect(assigns.accounts, label: "accounts")
+    IO.inspect(assigns.currencies, label: "currencies")
+
     ~H"""
     <div>
       <.header>
@@ -19,6 +22,42 @@ defmodule PiggyBankWeb.LedgerEntryLive.FormComponent do
         phx-change="validate"
         phx-submit="save"
       >
+        <.input field={@form[:date]} label="Date" type="datetime-local" />
+        <.input field={@form[:description]} label="Description" type="text" />
+
+        <.inputs_for :let={t} field={@form[:transactions]}>
+          <.header>Transaction</.header>
+          <.input type="hidden" name="ledger_entry[transactions_sort][]" value={t.index} />
+          <.input type="datetime-local" label="Date" field={t[:date]} />
+          <.input
+            label="Transaction Type"
+            field={t[:transaction_type]}
+            placeholder="debit/credit"
+            type="select"
+            options={["debit", "credit"]}
+          />
+          <.input
+            field={t[:account_id]}
+            label="Account"
+            type="select"
+            options={Enum.map(@accounts, fn a -> {a.name, a.id} end)}
+          />
+          <.input
+            field={t[:currency_id]}
+            label="Currency"
+            type="select"
+            options={Enum.map(@currencies, fn c -> {c.name, c.id} end)}
+          />
+          <.input type="text" label="Amount" field={t[:amount]} />
+          <button
+            name="ledger_entry[transactions_drop][]"
+            class="remove-transaction"
+            value={t.index}
+            phx-click={JS.dispatch("change")}
+          >
+            <.icon name="hero-x-mark" class="w-6 h-6 relative top-2" />
+          </button>
+        </.inputs_for>
 
         <:actions>
           <.button phx-disable-with="Saving...">Save Ledger entry</.button>

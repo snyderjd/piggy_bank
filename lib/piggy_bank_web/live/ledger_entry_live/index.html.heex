@@ -12,6 +12,9 @@
   rows={@streams.ledger_entries}
   row_click={fn {_id, ledger_entry} -> JS.navigate(~p"/ledger_entries/#{ledger_entry}") end}
 >
+  <:col :let={{_id, ledger_entry}} label="Date"><%= format_entry_date(ledger_entry.date) %></:col>
+  <:col :let={{_id, ledger_entry}} label="Description"><%= ledger_entry.description %></:col>
+
   <:action :let={{_id, ledger_entry}}>
     <div class="sr-only">
       <.link navigate={~p"/ledger_entries/#{ledger_entry}"}>Show</.link>
@@ -28,7 +31,12 @@
   </:action>
 </.table>
 
-<.modal :if={@live_action in [:new, :edit]} id="ledger_entry-modal" show on_cancel={JS.patch(~p"/ledger_entries")}>
+<.modal
+  :if={@live_action in [:new, :edit]}
+  id="ledger_entry-modal"
+  show
+  on_cancel={JS.patch(~p"/ledger_entries")}
+>
   <.live_component
     module={PiggyBankWeb.LedgerEntryLive.FormComponent}
     id={@ledger_entry.id || :new}

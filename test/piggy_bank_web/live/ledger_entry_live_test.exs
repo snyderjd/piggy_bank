@@ -47,7 +47,9 @@ defmodule PiggyBankWeb.LedgerEntryLiveTest do
     test "updates ledger_entry in listing", %{conn: conn, ledger_entry: ledger_entry} do
       {:ok, index_live, _html} = live(conn, ~p"/ledger_entries")
 
-      assert index_live |> element("#ledger_entries-#{ledger_entry.id} a", "Edit") |> render_click() =~
+      assert index_live
+             |> element("#ledger_entries-#{ledger_entry.id} a", "Edit")
+             |> render_click() =~
                "Edit Ledger entry"
 
       assert_patch(index_live, ~p"/ledger_entries/#{ledger_entry}/edit")
@@ -69,7 +71,10 @@ defmodule PiggyBankWeb.LedgerEntryLiveTest do
     test "deletes ledger_entry in listing", %{conn: conn, ledger_entry: ledger_entry} do
       {:ok, index_live, _html} = live(conn, ~p"/ledger_entries")
 
-      assert index_live |> element("#ledger_entries-#{ledger_entry.id} a", "Delete") |> render_click()
+      assert index_live
+             |> element("#ledger_entries-#{ledger_entry.id} a", "Delete")
+             |> render_click()
+
       refute has_element?(index_live, "#ledger_entries-#{ledger_entry.id}")
     end
   end

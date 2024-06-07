@@ -1,8 +1,11 @@
 defmodule PiggyBankWeb.LedgerEntryLive.Index do
   use PiggyBankWeb, :live_view
 
+  alias PiggyBank.Accounts
+  alias PiggyBank.Currencies
   alias PiggyBank.LedgerEntries
   alias PiggyBank.LedgerEntries.LedgerEntry
+  alias PiggyBank.Transactions.Transaction
 
   @impl true
   def mount(_params, _session, socket) do
@@ -21,9 +24,19 @@ defmodule PiggyBankWeb.LedgerEntryLive.Index do
   end
 
   defp apply_action(socket, :new, _params) do
+    # Get the stuff needed for the ledger_entry form
+    accounts = Accounts.list_accounts()
+    currencies = Currencies.list_currencies()
+    transactions = [%Transaction{}, %Transaction{}]
+
+    # changeset = LedgerEntries.change_ledger_entry(%LedgerEntry{transactions: transactions})
+
     socket
     |> assign(:page_title, "New Ledger entry")
-    |> assign(:ledger_entry, %LedgerEntry{})
+    # |> assign(:ledger_entry, %LedgerEntry{})
+    |> assign(:ledger_entry, %LedgerEntry{transactions: transactions})
+    |> assign(:accounts, accounts)
+    |> assign(:currencies, currencies)
   end
 
   defp apply_action(socket, :index, _params) do
@@ -43,5 +56,12 @@ defmodule PiggyBankWeb.LedgerEntryLive.Index do
     {:ok, _} = LedgerEntries.delete_ledger_entry(ledger_entry)
 
     {:noreply, stream_delete(socket, :ledger_entries, ledger_entry)}
+  end
+
+  @spec format_entry_date(NaiveDateTime.t()) :: binary()
+  def format_entry_date(datetime) do
+    datetime
+    |> NaiveDateTime.to_date()
+    |> Date.to_string()
   end
 end
