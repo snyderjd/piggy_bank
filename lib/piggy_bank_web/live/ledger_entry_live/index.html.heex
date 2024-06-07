@@ -1,0 +1,40 @@
+<.header>
+  Listing Ledger entries
+  <:actions>
+    <.link patch={~p"/ledger_entries/new"}>
+      <.button>New Ledger entry</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table
+  id="ledger_entries"
+  rows={@streams.ledger_entries}
+  row_click={fn {_id, ledger_entry} -> JS.navigate(~p"/ledger_entries/#{ledger_entry}") end}
+>
+  <:action :let={{_id, ledger_entry}}>
+    <div class="sr-only">
+      <.link navigate={~p"/ledger_entries/#{ledger_entry}"}>Show</.link>
+    </div>
+    <.link patch={~p"/ledger_entries/#{ledger_entry}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={{id, ledger_entry}}>
+    <.link
+      phx-click={JS.push("delete", value: %{id: ledger_entry.id}) |> hide("##{id}")}
+      data-confirm="Are you sure?"
+    >
+      Delete
+    </.link>
+  </:action>
+</.table>
+
+<.modal :if={@live_action in [:new, :edit]} id="ledger_entry-modal" show on_cancel={JS.patch(~p"/ledger_entries")}>
+  <.live_component
+    module={PiggyBankWeb.LedgerEntryLive.FormComponent}
+    id={@ledger_entry.id || :new}
+    title={@page_title}
+    action={@live_action}
+    ledger_entry={@ledger_entry}
+    patch={~p"/ledger_entries"}
+  />
+</.modal>

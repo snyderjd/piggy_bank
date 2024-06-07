@@ -19,10 +19,16 @@ defmodule PiggyBankWeb.Router do
 
     get "/", PageController, :home
 
+    # live "/ledger_entries", LedgerEntryLive.Index, :index
+    live "/ledger_entries/new", LedgerEntryLive.Index, :new
+    # live "/ledger_entries/:id/edit", LedgerEntryLive.Index, :edit
+    # live "/ledger_entries/:id", LedgerEntryLive.Show, :show
+    # live "/ledger_entries/:id/show/edit", LedgerEntryLive.Show, :edit
+
     resources "/account_types", AccountTypeController
     resources "/accounts", AccountController
     resources "/transactions", TransactionController, only: [:index, :show]
-    resources "/ledger_entries", LedgerEntryController, only: [:index, :show, :new, :create]
+    resources "/ledger_entries", LedgerEntryController, only: [:index, :show, :create]
   end
 
   # Other scopes may use custom stacks.

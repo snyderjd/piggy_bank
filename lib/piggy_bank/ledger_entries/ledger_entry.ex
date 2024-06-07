@@ -27,6 +27,10 @@ defmodule PiggyBank.LedgerEntries.LedgerEntry do
     struct
     |> Changeset.cast(params, [:description, :date])
     |> Changeset.validate_required([:description, :date])
-    |> Changeset.cast_assoc(:transactions, with: &Transaction.changeset/2)
+    |> Changeset.cast_assoc(:transactions,
+      with: &Transaction.changeset/2,
+      sort_param: :transactions_sort,
+      drop_param: :transactions_drop
+    )
   end
 end
