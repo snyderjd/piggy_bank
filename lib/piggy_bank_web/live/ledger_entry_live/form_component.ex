@@ -5,9 +5,6 @@ defmodule PiggyBankWeb.LedgerEntryLive.FormComponent do
 
   @impl true
   def render(assigns) do
-    IO.inspect(assigns.accounts, label: "accounts")
-    IO.inspect(assigns.currencies, label: "currencies")
-
     ~H"""
     <div>
       <.header>

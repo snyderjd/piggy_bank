@@ -69,6 +69,15 @@ defmodule PiggyBank.LedgerEntries do
       {:ok, telemetry_records}
     end)
     |> Repo.transaction()
+    |> then(fn result ->
+      case result do
+        {:ok, result} ->
+          {:ok, result.ledger_entry}
+
+        {:error, error} ->
+          {:error, error}
+      end
+    end)
   end
 
   defp build_ledger_entry_telemetry_params(action, ledger_entry) do

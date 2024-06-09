@@ -1,7 +1,7 @@
 defmodule PiggyBankWeb.LedgerEntryController do
   use PiggyBankWeb, :controller
 
-  alias PiggyBank.{Accounts, Currencies, LedgerEntries, Transactions}
+  alias PiggyBank.{Accounts, Currencies, LedgerEntries}
   alias PiggyBank.LedgerEntries.LedgerEntry
   alias PiggyBank.Transactions.Transaction
 

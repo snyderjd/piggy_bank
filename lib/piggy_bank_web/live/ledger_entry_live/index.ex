@@ -33,7 +33,6 @@ defmodule PiggyBankWeb.LedgerEntryLive.Index do
 
     socket
     |> assign(:page_title, "New Ledger entry")
-    # |> assign(:ledger_entry, %LedgerEntry{})
     |> assign(:ledger_entry, %LedgerEntry{transactions: transactions})
     |> assign(:accounts, accounts)
     |> assign(:currencies, currencies)
