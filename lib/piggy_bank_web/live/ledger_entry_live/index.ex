@@ -24,12 +24,9 @@ defmodule PiggyBankWeb.LedgerEntryLive.Index do
   end
 
   defp apply_action(socket, :new, _params) do
-    # Get the stuff needed for the ledger_entry form
     accounts = Accounts.list_accounts()
     currencies = Currencies.list_currencies()
-    transactions = [%Transaction{}, %Transaction{}]
-
-    # changeset = LedgerEntries.change_ledger_entry(%LedgerEntry{transactions: transactions})
+    transactions = [%Transaction{}]
 
     socket
     |> assign(:page_title, "New Ledger entry")

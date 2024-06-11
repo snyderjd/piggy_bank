@@ -47,14 +47,28 @@ defmodule PiggyBankWeb.LedgerEntryLive.FormComponent do
           />
           <.input type="text" label="Amount" field={t[:amount]} />
           <button
+            type="button"
             name="ledger_entry[transactions_drop][]"
-            class="remove-transaction"
             value={t.index}
             phx-click={JS.dispatch("change")}
           >
             <.icon name="hero-x-mark" class="w-6 h-6 relative top-2" />
           </button>
         </.inputs_for>
+
+        <input type="hidden" name="ledger_entry[transactions_drop][]" />
+
+        <div class="mt-2 flex items-center justify-between gap-6">
+          <button
+            type="button"
+            name="ledger_entry[transactions_sort][]"
+            value="new"
+            class="rounded-lg bg-zinc-900 hover:bg-zinc-700 py-2 px-3 text-sm font-semibold leading-6 text-white active:text-white/80"
+            phx-click={JS.dispatch("change")}
+          >
+            Add Transaction
+          </button>
+        </div>
 
         <:actions>
           <.button phx-disable-with="Saving...">Save Ledger entry</.button>
