@@ -8,8 +8,16 @@ defmodule PiggyBankWeb.LedgerEntryLive.Index do
   alias PiggyBank.Transactions.Transaction
 
   @impl true
-  def mount(_params, _session, socket) do
-    {:ok, stream(socket, :ledger_entries, LedgerEntries.list_ledger_entries())}
+  @spec mount(any(), any(), Phoenix.LiveView.Socket.t()) :: {:ok, any()}
+  def mount(params, _session, socket) do
+    ledger_entries =
+      params
+      |> Map.put("paginate", true)
+      |> LedgerEntries.list_ledger_entries()
+
+    IO.inspect(ledger_entries, label: "ledger_entries")
+
+    {:ok, stream(socket, :ledger_entries, ledger_entries)}
   end
 
   @impl true
@@ -44,6 +52,11 @@ defmodule PiggyBankWeb.LedgerEntryLive.Index do
   @impl true
   def handle_info({PiggyBankWeb.LedgerEntryLive.FormComponent, {:saved, ledger_entry}}, socket) do
     {:noreply, stream_insert(socket, :ledger_entries, ledger_entry)}
+  end
+
+  @impl true
+  def handle_event("nav", %{"page" => _page}, socket) do
+    {:noreply, socket}
   end
 
   @impl true

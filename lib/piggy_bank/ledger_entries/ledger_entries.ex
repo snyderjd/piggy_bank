@@ -9,7 +9,7 @@ defmodule PiggyBank.LedgerEntries do
   alias PiggyBank.LedgerEntries.LedgerEntry
   alias PiggyBank.AppTelemetryContext.AppTelemetry
 
-  @spec list_ledger_entries :: [LedgerEntry.t()]
+  @spec list_ledger_entries(map()) :: Scrivener.Page.t() | [LedgerEntry.t()]
   @doc """
   Returns the list of ledger_entries.
 
@@ -19,10 +19,22 @@ defmodule PiggyBank.LedgerEntries do
       [%LedgerEntry{}, ...]
 
   """
-  def list_ledger_entries do
+  def list_ledger_entries(params) do
     LedgerEntry
     |> preload([:transactions])
-    |> Repo.all()
+    |> order_by([le], desc: le.date)
+    |> paginate_ledger_entries(params)
+
+    # |> Repo.all()
+    # |> Repo.paginate(params)
+  end
+
+  defp paginate_ledger_entries(query, %{"paginate" => true} = params) do
+    Repo.paginate(query, params)
+  end
+
+  defp paginate_ledger_entries(query, _params) do
+    Repo.all(query)
   end
 
   @spec get_ledger_entry!(integer()) :: LedgerEntry.t()
