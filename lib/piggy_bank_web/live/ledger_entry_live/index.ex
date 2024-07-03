@@ -17,10 +17,22 @@ defmodule PiggyBankWeb.LedgerEntryLive.Index do
 
     IO.inspect(ledger_entries, label: "ledger_entries")
 
-    {:ok, stream(socket, :ledger_entries, ledger_entries)}
+    updated_socket =
+      socket
+      |> stream(:ledger_entries, ledger_entries)
+      |> assign(:page_number, ledger_entries.page_number)
+      |> assign(:page_size, ledger_entries.page_size)
+      |> assign(:total_entries, ledger_entries.total_entries)
+      |> assign(:total_pages, ledger_entries.total_pages)
+
+    {:ok, updated_socket}
   end
 
   @impl true
+  @spec handle_params(any(), any(), %{
+          :assigns => atom() | %{:live_action => :edit | :index | :new, optional(any()) => any()},
+          optional(any()) => any()
+        }) :: {:noreply, map()}
   def handle_params(params, _url, socket) do
     {:noreply, apply_action(socket, socket.assigns.live_action, params)}
   end
@@ -45,7 +57,7 @@ defmodule PiggyBankWeb.LedgerEntryLive.Index do
 
   defp apply_action(socket, :index, _params) do
     socket
-    |> assign(:page_title, "Listing Ledger entries")
+    |> assign(:page_title, "Listing Ledger Entries")
     |> assign(:ledger_entry, nil)
   end
 
@@ -55,7 +67,10 @@ defmodule PiggyBankWeb.LedgerEntryLive.Index do
   end
 
   @impl true
-  def handle_event("nav", %{"page" => _page}, socket) do
+  def handle_event("nav", %{"page" => page}, socket) do
+    # https://fullstackphoenix.com/tutorials/pagination-with-phoenix-liveview
+    IO.inspect("***** handle_event nav *****")
+    IO.inspect(page, label: "page")
     {:noreply, socket}
   end
 

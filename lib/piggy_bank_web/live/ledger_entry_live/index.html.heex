@@ -1,5 +1,11 @@
+<% IO.inspect(@streams, label: "streams") %>
+<% IO.inspect(@page_number, label: "page_number") %>
+<% IO.inspect(@page_size, label: "page_size") %>
+<% IO.inspect(@total_entries, label: "total_entries") %>
+<% IO.inspect(@total_pages, label: "total_pages") %>
+
 <.header>
-  Listing Ledger entries
+  Listing Ledger Entries
   <:actions>
     <.link patch={~p"/ledger_entries/new"}>
       <.button>New Ledger entry</.button>
@@ -33,9 +39,17 @@
 
 <nav class="border-t border-gray-200">
   <ul class="flex my-2">
-    <li>one</li>
-    <li>two</li>
-    <li>three</li>
+    <li class="m-1">
+      <.link phx-click="nav">Previous</.link>
+    </li>
+    <%= for idx <- Enum.to_list(1..@total_pages) do %>
+      <li class="m-1">
+        <.link phx-click="nav" phx-value-page={idx}><%= idx %></.link>
+      </li>
+    <% end %>
+    <li class="m-1">
+      <.link phx-click="nav">Next</.link>
+    </li>
   </ul>
 </nav>
 
