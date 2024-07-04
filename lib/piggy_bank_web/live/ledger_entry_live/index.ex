@@ -9,23 +9,8 @@ defmodule PiggyBankWeb.LedgerEntryLive.Index do
 
   @impl true
   @spec mount(any(), any(), Phoenix.LiveView.Socket.t()) :: {:ok, any()}
-  def mount(params, _session, socket) do
-    ledger_entries =
-      params
-      |> Map.put("paginate", true)
-      |> LedgerEntries.list_ledger_entries()
-
-    IO.inspect(ledger_entries, label: "ledger_entries")
-
-    updated_socket =
-      socket
-      |> stream(:ledger_entries, ledger_entries)
-      |> assign(:page_number, ledger_entries.page_number)
-      |> assign(:page_size, ledger_entries.page_size)
-      |> assign(:total_entries, ledger_entries.total_entries)
-      |> assign(:total_pages, ledger_entries.total_pages)
-
-    {:ok, updated_socket}
+  def mount(_params, _session, socket) do
+    {:ok, socket}
   end
 
   @impl true
@@ -55,8 +40,18 @@ defmodule PiggyBankWeb.LedgerEntryLive.Index do
     |> assign(:currencies, currencies)
   end
 
-  defp apply_action(socket, :index, _params) do
+  defp apply_action(socket, :index, params) do
+    ledger_entries =
+      params
+      |> Map.put("paginate", true)
+      |> LedgerEntries.list_ledger_entries()
+
     socket
+    |> stream(:ledger_entries, ledger_entries, reset: true)
+    |> assign(:page_number, ledger_entries.page_number)
+    |> assign(:page_size, ledger_entries.page_size)
+    |> assign(:total_entries, ledger_entries.total_entries)
+    |> assign(:total_pages, ledger_entries.total_pages)
     |> assign(:page_title, "Listing Ledger Entries")
     |> assign(:ledger_entry, nil)
   end
@@ -69,9 +64,7 @@ defmodule PiggyBankWeb.LedgerEntryLive.Index do
   @impl true
   def handle_event("nav", %{"page" => page}, socket) do
     # https://fullstackphoenix.com/tutorials/pagination-with-phoenix-liveview
-    IO.inspect("***** handle_event nav *****")
-    IO.inspect(page, label: "page")
-    {:noreply, socket}
+    {:noreply, push_patch(socket, to: ~p"/ledger_entries?page=#{page}")}
   end
 
   @impl true
