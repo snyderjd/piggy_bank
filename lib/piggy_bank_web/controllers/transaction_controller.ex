@@ -5,9 +5,20 @@ defmodule PiggyBankWeb.TransactionController do
   alias PiggyBank.Transactions.Transaction
 
   @spec index(Plug.Conn.t(), map()) :: Plug.Conn.t()
-  def index(conn, _params) do
-    transactions = Transactions.list_transactions()
-    render(conn, :index, transactions: transactions)
+  def index(conn, params) do
+    data = Transactions.list_transactions(params)
+
+    IO.inspect(data, label: "data")
+
+    render(
+      conn,
+      :index,
+      transactions: data,
+      page_number: data.page_number,
+      page_size: data.page_size,
+      total_entries: data.total_entries,
+      total_pages: data.total_pages
+    )
   end
 
   def new(conn, _params) do

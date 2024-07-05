@@ -24,9 +24,6 @@ defmodule PiggyBank.LedgerEntries do
     |> preload([:transactions])
     |> order_by([le], desc: le.date)
     |> paginate_ledger_entries(params)
-
-    # |> Repo.all()
-    # |> Repo.paginate(params)
   end
 
   defp paginate_ledger_entries(query, %{"paginate" => true} = params) do
