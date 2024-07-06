@@ -59,6 +59,23 @@ defmodule PiggyBank.LedgerEntries do
   def create_ledger_entry(attrs \\ %{}) do
     Multi.new()
     |> Multi.insert(:ledger_entry, LedgerEntry.changeset(%LedgerEntry{}, attrs))
+    |> Multi.run(:validate_transactions, fn _repo, %{ledger_entry: ledger_entry} ->
+      IO.inspect(ledger_entry, label: "ledger_entry")
+
+      # Get all the debits and sum them up
+      debits_sum =
+        ledger_entry.transactions
+        |> Enum.filter(fn t -> t.transaction_type == "debit" end)
+        |> Enum.map(fn t -> t.amount end)
+
+      # Get all the credits and sum them up
+      credits_sum =
+        ledger_entry.transactions
+        |> Enum.filter(fn t -> t.transaction_type == "credit" end)
+        |> Enum.map(fn t -> t.amount end)
+
+      {:ok, "valid"}
+    end)
     |> Multi.insert(:ledger_entry_telemetry, fn %{ledger_entry: ledger_entry} ->
       telemetry_params = build_ledger_entry_telemetry_params(:create, ledger_entry)
 

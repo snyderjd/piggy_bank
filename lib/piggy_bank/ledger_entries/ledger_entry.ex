@@ -23,6 +23,7 @@ defmodule PiggyBank.LedgerEntries.LedgerEntry do
     has_many :transactions, Transaction, on_replace: :delete
   end
 
+  @spec changeset(map(), map()) :: map()
   def changeset(struct, params \\ %{}) do
     struct
     |> Changeset.cast(params, [:description, :date])

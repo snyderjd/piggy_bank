@@ -8,7 +8,7 @@ defmodule PiggyBankWeb.TransactionController do
   def index(conn, params) do
     data = Transactions.list_transactions(params)
 
-    IO.inspect(data, label: "data")
+    # IO.inspect(data, label: "data")
 
     render(
       conn,
