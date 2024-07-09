@@ -4,32 +4,57 @@
   </.error>
 
   <.input field={f[:date]} label="Date" type="datetime-local" />
-  <.input field={f[:description]} label="Description" type="text" /> 
+  <.input field={f[:description]} label="Description" type="text" />
 
-  <.inputs_for :let={t} field={f[:transactions]}>
-    <.header>Transaction</.header>
-    <.input type="datetime-local" label="Date" field={t[:date]} />
-    <.input
-      label="Transaction Type"
-      field={t[:transaction_type]}
-      placeholder="debit/credit"
-      type="select"
-      options={["debit", "credit"]}
-    />
-    <.input
-      field={t[:account_id]}
-      label="Account"
-      type="select"
-      options={Enum.map(@accounts, fn a -> {a.name, a.id} end)}
-    />
-    <.input
-      field={t[:currency_id]}
-      label="Currency"
-      type="select"
-      options={Enum.map(@currencies, fn c -> {c.name, c.id} end)}
-    />
-    <.input type="text" label="Amount" field={t[:amount]} />
-  </.inputs_for>
+  <div id="transactions-container">
+    <.inputs_for :let={t} field={f[:transactions]}>
+      <div class="transaction-fields" data-index={t.index}>
+        <.header>Transaction</.header>
+        <.input type="hidden" name="ledger_entry[transactions_sort][]" value={t.index} />
+        <.input type="datetime-local" label="Date" field={t[:date]} />
+        <.input
+          label="Transaction Type"
+          field={t[:transaction_type]}
+          placeholder="debit/credit"
+          type="select"
+          options={["debit", "credit"]}
+        />
+        <.input
+          field={t[:account_id]}
+          label="Account"
+          type="select"
+          options={Enum.map(@accounts, fn a -> {a.name, a.id} end)}
+        />
+        <.input
+          field={t[:currency_id]}
+          label="Currency"
+          type="select"
+          options={Enum.map(@currencies, fn c -> {c.name, c.id} end)}
+        />
+        <.input type="text" label="Amount" field={t[:amount]} />
+        <button
+          name="ledger_entry[transactions_drop][]"
+          class="remove-transaction"
+          value={t.index}
+          phx-click={JS.dispatch("change")}
+        >
+          <.icon name="hero-x-mark" class="w-6 h-6 relative top-2" />
+        </button>
+      </div>
+    </.inputs_for>
+  </div>
+
+  <input type="hidden" name="ledger_entry[transactions_drop][]" />
+
+  <button
+    type="button"
+    id="add-transaction"
+    name="ledger_entry[transactions_sort][]"
+    value="new"
+    phx-click={JS.dispatch("change")}
+  >
+    Add Transaction
+  </button>
 
   <:actions>
     <.button>Save Ledger entry</.button>

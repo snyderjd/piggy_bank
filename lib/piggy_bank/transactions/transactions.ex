@@ -8,7 +8,7 @@ defmodule PiggyBank.Transactions do
 
   alias PiggyBank.Transactions.Transaction
 
-  @spec list_transactions(map()) :: [Transaction.t()]
+  @spec list_transactions(map()) :: Scrivener.Page.t() | [Transaction.t()]
   @doc """
   Returns the list of transactions.
   ## Examples
@@ -18,8 +18,17 @@ defmodule PiggyBank.Transactions do
   def list_transactions(params \\ %{}) do
     from(t in Transaction, as: :t)
     |> filter_by_ledger_entry(params)
+    |> order_by([t], desc: t.date)
     |> preload([:account, :currency])
-    |> Repo.all()
+    |> get_transactions(params)
+  end
+
+  defp get_transactions(query, %{"all" => true} = _params) do
+    Repo.all(query)
+  end
+
+  defp get_transactions(query, params) do
+    Repo.paginate(query, params)
   end
 
   defp filter_by_ledger_entry(query, %{"ledger_entry_id" => ledger_entry_id} = _params) do

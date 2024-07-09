@@ -7,10 +7,9 @@ defmodule PiggyBank.LedgerEntries do
   alias Ecto.{Changeset, Multi}
   alias PiggyBank.Repo
   alias PiggyBank.LedgerEntries.LedgerEntry
-  alias PiggyBank.Transactions.Transaction
   alias PiggyBank.AppTelemetryContext.AppTelemetry
 
-  @spec list_ledger_entries :: [LedgerEntry.t()]
+  @spec list_ledger_entries(map()) :: Scrivener.Page.t() | [LedgerEntry.t()]
   @doc """
   Returns the list of ledger_entries.
 
@@ -20,10 +19,19 @@ defmodule PiggyBank.LedgerEntries do
       [%LedgerEntry{}, ...]
 
   """
-  def list_ledger_entries do
+  def list_ledger_entries(params) do
     LedgerEntry
     |> preload([:transactions])
-    |> Repo.all()
+    |> order_by([le], desc: le.date)
+    |> paginate_ledger_entries(params)
+  end
+
+  defp paginate_ledger_entries(query, %{"paginate" => true} = params) do
+    Repo.paginate(query, params)
+  end
+
+  defp paginate_ledger_entries(query, _params) do
+    Repo.all(query)
   end
 
   @spec get_ledger_entry!(integer()) :: LedgerEntry.t()
@@ -51,6 +59,16 @@ defmodule PiggyBank.LedgerEntries do
   def create_ledger_entry(attrs \\ %{}) do
     Multi.new()
     |> Multi.insert(:ledger_entry, LedgerEntry.changeset(%LedgerEntry{}, attrs))
+    |> Multi.run(:validate_transactions, fn _repo, %{ledger_entry: ledger_entry} ->
+      {total_debits, total_credits} = total_debits_and_credits(ledger_entry.transactions)
+
+      if total_debits == total_credits do
+        {:ok, "valid"}
+      else
+        {:error,
+         "Total debits must equal total credits. Debits: #{total_debits}, Credits: #{total_credits}"}
+      end
+    end)
     |> Multi.insert(:ledger_entry_telemetry, fn %{ledger_entry: ledger_entry} ->
       telemetry_params = build_ledger_entry_telemetry_params(:create, ledger_entry)
 
@@ -70,6 +88,31 @@ defmodule PiggyBank.LedgerEntries do
       {:ok, telemetry_records}
     end)
     |> Repo.transaction()
+    |> then(fn result ->
+      case result do
+        {:ok, result} ->
+          {:ok, result.ledger_entry}
+
+        {:error, operation, error, changes} ->
+          {:error, operation, error, changes}
+      end
+    end)
+  end
+
+  defp total_debits_and_credits(transactions) do
+    total_debits =
+      transactions
+      |> Enum.filter(fn t -> t.transaction_type == "debit" end)
+      |> Enum.map(fn t -> Decimal.to_float(t.amount) end)
+      |> Enum.sum()
+
+    total_credits =
+      transactions
+      |> Enum.filter(fn t -> t.transaction_type == "credit" end)
+      |> Enum.map(fn t -> Decimal.to_float(t.amount) end)
+      |> Enum.sum()
+
+    {total_debits, total_credits}
   end
 
   defp build_ledger_entry_telemetry_params(action, ledger_entry) do
@@ -97,7 +140,8 @@ defmodule PiggyBank.LedgerEntries do
     {event_name, description} =
       case action do
         :create ->
-          {"create_transaction", "Create Transaction #{transaction.transaction_type} #{transaction.account.name} #{transaction.amount}"}
+          {"create_transaction",
+           "Create Transaction #{transaction.transaction_type} #{transaction.account.name} #{transaction.amount}"}
       end
 
     %{
