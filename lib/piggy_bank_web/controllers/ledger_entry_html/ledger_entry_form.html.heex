@@ -60,22 +60,3 @@
     <.button>Save Ledger entry</.button>
   </:actions>
 </.simple_form>
-
-<%!-- <.inputs_for :let={ef} field={@form[:emails]}>
-  <input type="hidden" name="mailing_list[emails_sort][]" value={ef.index} />
-  <.input type="text" field={ef[:email]} placeholder="email" />
-  <.input type="text" field={ef[:name]} placeholder="name" />
-  <button
-    name="mailing_list[emails_drop][]"
-    value={ef.index}
-    phx-click={JS.dispatch("change")}
-  >
-    <.icon name="hero-x-mark" class="w-6 h-6 relative top-2" />
-  </button>
-</.inputs_for>
-
-<input type="hidden" name="mailing_list[emails_drop][]" />
-
-<button type="button" name="mailing_list[emails_sort][]" value="new" phx-click={JS.dispatch("change")}>
-  add more
-</button> --%>
