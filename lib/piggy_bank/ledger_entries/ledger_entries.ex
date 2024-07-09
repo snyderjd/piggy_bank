@@ -60,21 +60,14 @@ defmodule PiggyBank.LedgerEntries do
     Multi.new()
     |> Multi.insert(:ledger_entry, LedgerEntry.changeset(%LedgerEntry{}, attrs))
     |> Multi.run(:validate_transactions, fn _repo, %{ledger_entry: ledger_entry} ->
-      IO.inspect(ledger_entry, label: "ledger_entry")
+      {total_debits, total_credits} = total_debits_and_credits(ledger_entry.transactions)
 
-      # Get all the debits and sum them up
-      debits_sum =
-        ledger_entry.transactions
-        |> Enum.filter(fn t -> t.transaction_type == "debit" end)
-        |> Enum.map(fn t -> t.amount end)
-
-      # Get all the credits and sum them up
-      credits_sum =
-        ledger_entry.transactions
-        |> Enum.filter(fn t -> t.transaction_type == "credit" end)
-        |> Enum.map(fn t -> t.amount end)
-
-      {:ok, "valid"}
+      if total_debits == total_credits do
+        {:ok, "valid"}
+      else
+        {:error,
+         "Total debits must equal total credits. Debits: #{total_debits}, Credits: #{total_credits}"}
+      end
     end)
     |> Multi.insert(:ledger_entry_telemetry, fn %{ledger_entry: ledger_entry} ->
       telemetry_params = build_ledger_entry_telemetry_params(:create, ledger_entry)
@@ -100,10 +93,26 @@ defmodule PiggyBank.LedgerEntries do
         {:ok, result} ->
           {:ok, result.ledger_entry}
 
-        {:error, error} ->
-          {:error, error}
+        {:error, operation, error, changes} ->
+          {:error, operation, error, changes}
       end
     end)
+  end
+
+  defp total_debits_and_credits(transactions) do
+    total_debits =
+      transactions
+      |> Enum.filter(fn t -> t.transaction_type == "debit" end)
+      |> Enum.map(fn t -> Decimal.to_float(t.amount) end)
+      |> Enum.sum()
+
+    total_credits =
+      transactions
+      |> Enum.filter(fn t -> t.transaction_type == "credit" end)
+      |> Enum.map(fn t -> Decimal.to_float(t.amount) end)
+      |> Enum.sum()
+
+    {total_debits, total_credits}
   end
 
   defp build_ledger_entry_telemetry_params(action, ledger_entry) do
