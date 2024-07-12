@@ -6,12 +6,10 @@ defmodule PiggyBankWeb.LedgerEntryLive.FormComponent do
 
   @impl true
   def render(assigns) do
-    IO.inspect(assigns, label: "assigns")
-
     ~H"""
     <div>
-      <%= if @flash[:error] do %>
-        <.flash kind={:error} flash={@flash["error"]} />
+      <%= if @flash["error"] do %>
+        <.flash kind={:error} flash={@flash} />
       <% end %>
 
       <.header>
@@ -132,27 +130,16 @@ defmodule PiggyBankWeb.LedgerEntryLive.FormComponent do
         {:noreply,
          socket
          |> put_flash(:info, "Ledger entry created successfully")
+         |> clear_flash(:error)
          |> push_patch(to: socket.assigns.patch)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign_form(socket, changeset)}
 
-      {:error, operation, error, changes} ->
-        IO.inspect(operation, label: "operation")
-        IO.inspect(changes, label: "changes")
-
-        # renders the flash error on the LedgerEntryLive.Index list
-        # updated_socket =
-        #   socket
-        #   |> put_flash(:error, error)
-        #   |> push_patch(to: socket.assigns.patch)
-          # |> assign_form(LedgerEntry.changeset(changes.ledger_entry))
-
-        # re-renders the :new form but doesn't render the flash error
+      {:error, _operation, error, changes} ->
         updated_socket =
           socket
           |> put_flash(:error, error)
-          # |> push_patch(to: socket.assigns.patch)
           |> assign_form(LedgerEntry.changeset(changes.ledger_entry))
 
         {:noreply, updated_socket}
