@@ -88,7 +88,7 @@ defmodule PiggyBank.AccountTypes do
       iex> change_account_type(account_type)
       %Todo{...}
   """
-  @spec change_account_type(AccountType.t()) :: Changeset.t()
+  @spec change_account_type(AccountType.t(), map()) :: Changeset.t()
   def change_account_type(%AccountType{} = account_type, attrs \\ %{}) do
     AccountType.changeset(account_type, attrs)
   end

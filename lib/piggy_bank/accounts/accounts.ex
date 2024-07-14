@@ -19,7 +19,7 @@ defmodule PiggyBank.Accounts do
   """
   def list_accounts do
     Account
-    |> preload([:account_type, :user])
+    |> preload([:account_type, :user, :transactions])
     |> Repo.all()
   end
 
@@ -56,7 +56,9 @@ defmodule PiggyBank.Accounts do
   end
 
   defp insert_account_changeset(attrs) do
-    Account.changeset(%Account{}, attrs)
+    %Account{}
+    |> Repo.preload([:account_type, :user, :transactions])
+    |> Account.changeset(attrs)
   end
 
   defp telemetry_for_create_account_changeset(account) do
