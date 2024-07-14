@@ -4,7 +4,7 @@ defmodule PiggyBank.Accounts do
   """
 
   import Ecto.Query, warn: false
-  alias Ecto.Multi
+  alias Ecto.{Changeset, Multi}
   alias PiggyBank.Repo
   alias PiggyBank.Accounts.Account
   alias PiggyBank.AppTelemetryContext.AppTelemetry
@@ -129,6 +129,7 @@ defmodule PiggyBank.Accounts do
       iex> change_account(account)
       %Todo{...}
   """
+  @spec change_account(Account.t()) :: Changeset.t()
   def change_account(%Account{} = account, attrs \\ %{}) do
     Account.changeset(account, attrs)
   end

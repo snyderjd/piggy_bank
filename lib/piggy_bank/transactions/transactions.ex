@@ -4,6 +4,7 @@ defmodule PiggyBank.Transactions do
   """
 
   import Ecto.Query, warn: false
+  alias Ecto.Changeset
   alias PiggyBank.Repo
 
   alias PiggyBank.Transactions.Transaction
@@ -102,14 +103,12 @@ defmodule PiggyBank.Transactions do
 
   @doc """
   Returns a data structure for tracking transaction changes.
-
   ## Examples
-
       iex> change_transaction(transaction)
       %Todo{...}
-
   """
-  def change_transaction(%Transaction{} = _transaction, _attrs \\ %{}) do
-    raise "TODO"
+  @spec change_transaction(Transaction.t()) :: Changeset.t()
+  def change_transaction(%Transaction{} = transaction, attrs \\ %{}) do
+    Transaction.changeset(transaction, attrs)
   end
 end
