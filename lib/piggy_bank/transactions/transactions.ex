@@ -20,7 +20,7 @@ defmodule PiggyBank.Transactions do
     from(t in Transaction, as: :t)
     |> filter_by_ledger_entry(params)
     |> order_by([t], desc: t.date)
-    |> preload([:account, :currency])
+    |> preload([:currency, :account, :ledger_entry])
     |> get_transactions(params)
   end
 
@@ -55,50 +55,50 @@ defmodule PiggyBank.Transactions do
 
   @doc """
   Creates a transaction.
-
   ## Examples
-
       iex> create_transaction(%{field: value})
       {:ok, %Transaction{}}
 
       iex> create_transaction(%{field: bad_value})
       {:error, ...}
-
   """
-  def create_transaction(_attrs \\ %{}) do
-    raise "TODO"
+  @spec create_transaction(map()) :: {:ok, Transaction.t()} | {:error, Changeset.t()}
+  def create_transaction(attrs \\ %{}) do
+    %Transaction{}
+    |> Repo.preload([:account, :ledger_entry, :currency])
+    |> Transaction.changeset(attrs)
+    |> Repo.insert()
   end
 
   @doc """
   Updates a transaction.
-
   ## Examples
-
       iex> update_transaction(transaction, %{field: new_value})
       {:ok, %Transaction{}}
 
       iex> update_transaction(transaction, %{field: bad_value})
       {:error, ...}
-
   """
-  def update_transaction(%Transaction{} = _transaction, _attrs) do
-    raise "TODO"
+  @spec update_transaction(Transaction.t(), map()) ::
+          {:ok, Transaction.t()} | {:error, Changeset.t()}
+  def update_transaction(%Transaction{} = transaction, attrs) do
+    transaction
+    |> Transaction.changeset(attrs)
+    |> Repo.update()
   end
 
   @doc """
   Deletes a Transaction.
-
   ## Examples
-
       iex> delete_transaction(transaction)
       {:ok, %Transaction{}}
 
       iex> delete_transaction(transaction)
       {:error, ...}
-
   """
-  def delete_transaction(%Transaction{} = _transaction) do
-    raise "TODO"
+  @spec delete_transaction(Transaction.t()) :: {:ok, Transaction.t()} | {:error, Changeset.t()}
+  def delete_transaction(%Transaction{} = transaction) do
+    Repo.delete(transaction)
   end
 
   @doc """

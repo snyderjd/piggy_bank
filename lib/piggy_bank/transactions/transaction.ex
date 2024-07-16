@@ -34,7 +34,14 @@ defmodule PiggyBank.Transactions.Transaction do
   @spec changeset(map(), map()) :: Changeset.t()
   def changeset(struct, params \\ %{}) do
     struct
-    |> Changeset.cast(params, [:transaction_type, :amount, :date, :account_id, :currency_id])
+    |> Changeset.cast(params, [
+      :transaction_type,
+      :amount,
+      :date,
+      :account_id,
+      :currency_id,
+      :ledger_entry_id
+    ])
     |> Changeset.validate_required([:transaction_type, :amount, :date])
     |> Changeset.validate_inclusion(:transaction_type, ["debit", "credit"])
     |> add_account_association(params)

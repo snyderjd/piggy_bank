@@ -75,16 +75,15 @@ defmodule PiggyBank.AppTelemetryContext do
 
   @doc """
   Deletes a app_telemetry.
-
   ## Examples
-
       iex> delete_app_telemetry(app_telemetry)
       {:ok, %AppTelemetry{}}
 
       iex> delete_app_telemetry(app_telemetry)
       {:error, %Ecto.Changeset{}}
-
   """
+  @spec delete_app_telemetry(AppTelemetry.t()) ::
+          {:ok, AppTelemetry.t()} | {:error, Changeset.t()}
   def delete_app_telemetry(%AppTelemetry{} = app_telemetry) do
     Repo.delete(app_telemetry)
   end
