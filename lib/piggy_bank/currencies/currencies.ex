@@ -59,35 +59,31 @@ defmodule PiggyBank.Currencies do
   def update_currency(%Currency{} = currency, attrs) do
     currency
     |> Currency.changeset(attrs)
-    |> Repo.insert()
+    |> Repo.update()
   end
 
   @doc """
   Deletes a Currency.
-
   ## Examples
-
       iex> delete_currency(currency)
       {:ok, %Currency{}}
 
       iex> delete_currency(currency)
       {:error, ...}
-
   """
-  def delete_currency(%Currency{} = _currency) do
-    raise "TODO"
+  @spec delete_currency(Currency.t()) :: {:ok, Currency.t()} | {:error, Changeset.t()}
+  def delete_currency(%Currency{} = currency) do
+    Repo.delete(currency)
   end
 
   @doc """
   Returns a data structure for tracking currency changes.
-
   ## Examples
-
       iex> change_currency(currency)
       %Todo{...}
-
   """
-  def change_currency(%Currency{} = _currency, _attrs \\ %{}) do
-    raise "TODO"
+  @spec change_currency(Currency.t(), map()) :: Changeset.t()
+  def change_currency(%Currency{} = currency, attrs \\ %{}) do
+    Currency.changeset(currency, attrs)
   end
 end

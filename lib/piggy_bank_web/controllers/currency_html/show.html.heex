@@ -8,6 +8,9 @@
   </:actions>
 </.header>
 
-<.list></.list>
+<.list>
+  <:item title="Name"><%= @currency.name %></:item>
+  <:item title="Code"><%= @currency.code %></:item>
+</.list>
 
 <.back navigate={~p"/currencies"}>Back to currencies</.back>

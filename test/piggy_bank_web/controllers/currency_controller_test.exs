@@ -3,9 +3,10 @@ defmodule PiggyBankWeb.CurrencyControllerTest do
 
   import PiggyBank.CurrenciesFixtures
 
-  @create_attrs %{}
-  @update_attrs %{}
-  @invalid_attrs %{}
+  # @create_attrs %{"name" => "Test Dollar", "code" => "TST"}
+  @create_attrs %{name: "Test Dollar", code: "TST"}
+  @update_attrs %{name: "Test Currency", code: "TC"}
+  @invalid_attrs %{name: "", code: ""}
 
   describe "index" do
     test "lists all currencies", %{conn: conn} do
@@ -78,7 +79,7 @@ defmodule PiggyBankWeb.CurrencyControllerTest do
   end
 
   defp create_currency(_) do
-    currency = currency_fixture()
+    currency = currency_fixture(@create_attrs)
     %{currency: currency}
   end
 end
