@@ -68,18 +68,16 @@ defmodule PiggyBank.AccountTypes do
 
   @doc """
   Deletes a AccountType.
-
   ## Examples
-
       iex> delete_account_type(account_type)
       {:ok, %AccountType{}}
 
       iex> delete_account_type(account_type)
       {:error, ...}
-
   """
-  def delete_account_type(%AccountType{} = _account_type) do
-    raise "TODO"
+  @spec delete_account_type(AccountType.t()) :: {:ok, AccountType.t()} | {:error, Changeset.t()}
+  def delete_account_type(%AccountType{} = account_type) do
+    Repo.delete(account_type)
   end
 
   @doc """

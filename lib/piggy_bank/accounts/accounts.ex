@@ -121,8 +121,9 @@ defmodule PiggyBank.Accounts do
       iex> delete_account(account)
       {:error, ...}
   """
-  def delete_account(%Account{} = _account) do
-    raise "TODO"
+  @spec delete_account(Account.t()) :: {:ok, Account.t()} | {:error, Changeset.t()}
+  def delete_account(%Account{} = account) do
+    Repo.delete(account)
   end
 
   @doc """

@@ -2,6 +2,7 @@ defmodule PiggyBank.AccountsTest do
   use PiggyBank.DataCase
 
   alias PiggyBank.Accounts
+  alias PiggyBank.AppTelemetryContext
 
   describe "accounts" do
     alias PiggyBank.Accounts.Account
@@ -25,7 +26,11 @@ defmodule PiggyBank.AccountsTest do
     test "create_account/1 with valid data creates a account" do
       valid_attrs = %{"name" => "Charlie Munger Savings Account"}
 
-      assert {:ok, %Account{} = account} = Accounts.create_account(valid_attrs)
+      assert {:ok,
+              %{
+                account: %Account{},
+                app_telemetry: %AppTelemetry{}
+              }} = Accounts.create_account(valid_attrs)
     end
 
     test "create_account/1 with invalid data returns error changeset" do
@@ -50,19 +55,28 @@ defmodule PiggyBank.AccountsTest do
     end
 
     test "update_account/2 with invalid data returns error changeset" do
-      account = account_fixture(@create_attrs)
-      assert {:error, %Ecto.Changeset{}} = Accounts.update_account(account, @invalid_attrs)
+      %{account: account, app_telemetry: _telemetry} =
+        account_fixture(@create_attrs)
+
+      assert {:error, :account, %Ecto.Changeset{}, %{}} =
+               Accounts.update_account(account, @invalid_attrs)
+
       assert account == Accounts.get_account!(account.id)
     end
 
     test "delete_account/1 deletes the account" do
-      account = account_fixture()
+      %{account: account, app_telemetry: telemetry} =
+        account_fixture(%{"name" => "Checking account"})
+
+      assert {:ok, %AppTelemetry{}} = AppTelemetryContext.delete_app_telemetry(telemetry)
       assert {:ok, %Account{}} = Accounts.delete_account(account)
       assert_raise Ecto.NoResultsError, fn -> Accounts.get_account!(account.id) end
     end
 
     test "change_account/1 returns a account changeset" do
-      account = account_fixture(@create_attrs)
+      %{account: account, app_telemetry: _telemetry} =
+        account_fixture(@create_attrs)
+
       assert %Ecto.Changeset{} = Accounts.change_account(account)
     end
   end

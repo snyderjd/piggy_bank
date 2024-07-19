@@ -19,7 +19,7 @@ defmodule PiggyBank.LedgerEntries do
       [%LedgerEntry{}, ...]
 
   """
-  def list_ledger_entries(params) do
+  def list_ledger_entries(params \\ %{}) do
     LedgerEntry
     |> preload([:transactions])
     |> order_by([le], desc: le.date)

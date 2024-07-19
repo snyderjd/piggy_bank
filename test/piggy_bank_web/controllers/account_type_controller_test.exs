@@ -3,9 +3,9 @@ defmodule PiggyBankWeb.AccountTypeControllerTest do
 
   import PiggyBank.AccountTypesFixtures
 
-  @create_attrs %{}
-  @update_attrs %{}
-  @invalid_attrs %{}
+  @create_attrs %{"name" => "Revenue"}
+  @update_attrs %{"name" => "Expense"}
+  @invalid_attrs %{"name" => ""}
 
   describe "index" do
     test "lists all account_types", %{conn: conn} do
@@ -78,7 +78,7 @@ defmodule PiggyBankWeb.AccountTypeControllerTest do
   end
 
   defp create_account_type(_) do
-    account_type = account_type_fixture()
+    account_type = account_type_fixture(@create_attrs)
     %{account_type: account_type}
   end
 end
