@@ -7,6 +7,7 @@ defmodule PiggyBank.Accounts do
   alias Ecto.{Changeset, Multi}
   alias PiggyBank.Repo
   alias PiggyBank.Accounts.Account
+  alias PiggyBank.AppTelemetryContext
   alias PiggyBank.AppTelemetryContext.AppTelemetry
   require Logger
 
@@ -123,6 +124,14 @@ defmodule PiggyBank.Accounts do
   """
   @spec delete_account(Account.t()) :: {:ok, Account.t()} | {:error, Changeset.t()}
   def delete_account(%Account{} = account) do
+    # Delete the account's app_telemetry first
+    account
+    |> Repo.preload(:app_telemetry)
+    |> Map.get(:app_telemetry, [])
+    |> Enum.each(fn telemetry ->
+      AppTelemetryContext.delete_app_telemetry(telemetry)
+    end)
+
     Repo.delete(account)
   end
 

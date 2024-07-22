@@ -7,6 +7,7 @@ defmodule PiggyBank.Accounts.Account do
 
   alias Ecto.Changeset
   alias PiggyBank.AccountTypes.AccountType
+  alias PiggyBank.AppTelemetryContext.AppTelemetry
   alias PiggyBank.Transactions.Transaction
   alias PiggyBank.Users.User
 
@@ -27,6 +28,7 @@ defmodule PiggyBank.Accounts.Account do
     belongs_to :user, User
 
     has_many :transactions, Transaction
+    has_many :app_telemetry, AppTelemetry
   end
 
   @spec changeset(map(), map()) :: Changeset.t()

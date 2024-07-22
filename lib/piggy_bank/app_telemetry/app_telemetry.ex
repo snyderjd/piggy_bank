@@ -32,8 +32,5 @@ defmodule PiggyBank.AppTelemetryContext.AppTelemetry do
     app_telemetry
     |> cast(attrs, [:event_name, :description, :metadata, :date, :account_id, :user_id])
     |> validate_required([:event_name, :description, :metadata, :date])
-
-    # |> put_assoc(:user, attrs.user)
-    # |> put_assoc(:account, attrs.account)
   end
 end

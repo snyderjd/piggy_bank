@@ -4,15 +4,23 @@ defmodule PiggyBank.AccountsFixtures do
   entities via the `PiggyBank.Accounts` context.
   """
 
+  alias PiggyBank.AccountTypesFixtures
+
   @doc """
   Generate a account.
   """
   def account_fixture(attrs \\ %{}) do
-    {:ok, account} =
+    account_type = AccountTypesFixtures.account_type_fixture(%{"name" => "Liability"})
+
+    attrs =
+      attrs
+      |> Map.put(:account_type, account_type)
+
+    {:ok, multi} =
       attrs
       |> Enum.into(%{})
       |> PiggyBank.Accounts.create_account()
 
-    account
+    multi
   end
 end
