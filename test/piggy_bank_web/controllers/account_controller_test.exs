@@ -2,6 +2,7 @@ defmodule PiggyBankWeb.AccountControllerTest do
   use PiggyBankWeb.ConnCase
 
   import PiggyBank.AccountsFixtures
+  import PiggyBank.AccountTypesFixtures
 
   @create_attrs %{name: "Test Savings Account"}
   @update_attrs %{name: "Test Savings Account Update"}
@@ -23,7 +24,12 @@ defmodule PiggyBankWeb.AccountControllerTest do
 
   describe "create account" do
     test "redirects to show when data is valid", %{conn: conn} do
-      conn = post(conn, ~p"/accounts", account: @create_attrs)
+      account_type = account_type_fixture(%{"name" => "Liability"})
+
+      attrs =
+        Map.put(@create_attrs, :account_type, account_type)
+
+      conn = post(conn, ~p"/accounts", account: attrs)
 
       assert %{id: id} = redirected_params(conn)
       assert redirected_to(conn) == ~p"/accounts/#{id}"

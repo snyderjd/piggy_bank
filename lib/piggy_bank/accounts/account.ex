@@ -43,5 +43,9 @@ defmodule PiggyBank.Accounts.Account do
     Changeset.put_assoc(changeset, :account_type, account_type)
   end
 
+  defp add_account_type_association(changeset, %{"account_type" => account_type} = _params) do
+    Changeset.put_assoc(changeset, :account_type, account_type)
+  end
+
   defp add_account_type_association(changeset, _params), do: changeset
 end
