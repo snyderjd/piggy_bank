@@ -1,6 +1,8 @@
 defmodule PiggyBankWeb.AccountHTML do
   use PiggyBankWeb, :html
 
+  import PiggyBankWeb.TransactionHTML
+
   embed_templates "account_html/*"
 
   @doc """

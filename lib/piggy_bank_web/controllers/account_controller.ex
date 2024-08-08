@@ -41,6 +41,8 @@ defmodule PiggyBankWeb.AccountController do
   @spec show(Plug.Conn.t(), map()) :: Plug.Conn.t()
   def show(conn, %{"id" => id}) do
     account = Accounts.get_account!(id)
+    IO.inspect(account, label: "account")
+
     render(conn, :show, account: account)
   end
 

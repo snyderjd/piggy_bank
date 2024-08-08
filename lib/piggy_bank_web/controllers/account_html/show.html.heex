@@ -15,4 +15,16 @@
   <:item title="USD Balance"><%= @account.usd_current_balance %></:item>
 </.list>
 
+<.header class="my-10">Account Transactions</.header>
+
+<.table
+  id="transactions"
+  rows={@account.transactions}
+  row_click={&JS.navigate(~p"/transactions/#{&1}")}
+>
+  <:col :let={transaction} label="Date"><%= format_transaction_date(transaction.date) %></:col>
+  <:col :let={transaction} label="Transaction Type"><%= transaction.transaction_type %></:col>
+  <:col :let={transaction} label="Amount"><%= transaction.amount %></:col>
+</.table>
+
 <.back navigate={~p"/accounts"}>Back to accounts</.back>

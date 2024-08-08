@@ -9,6 +9,7 @@ defmodule PiggyBank.Accounts do
   alias PiggyBank.Accounts.Account
   alias PiggyBank.AppTelemetryContext
   alias PiggyBank.AppTelemetryContext.AppTelemetry
+  alias PiggyBank.Transactions.Transaction
   require Logger
 
   @spec list_accounts() :: [Account.t()]
@@ -32,8 +33,14 @@ defmodule PiggyBank.Accounts do
       %Account{}
   """
   def get_account!(id) do
+    transactions =
+      from(t in Transaction,
+        where: t.account_id == ^id,
+        order_by: [desc: t.date]
+      )
+
     Account
-    |> preload([:account_type, :user, :transactions])
+    |> preload([:account_type, :user, transactions: ^transactions])
     |> Repo.get!(id)
   end
 
