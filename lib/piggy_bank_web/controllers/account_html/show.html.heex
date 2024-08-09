@@ -13,6 +13,7 @@
   <:item title="Account Type"><%= @account.account_type.name %></:item>
   <:item title="User"><%= render_account_user(@account) %></:item>
   <:item title="USD Balance"><%= @account.usd_current_balance %></:item>
+  <:item title="Current Balance"><%= @account.current_balance %></:item>
 </.list>
 
 <.header class="my-10">Account Transactions</.header>

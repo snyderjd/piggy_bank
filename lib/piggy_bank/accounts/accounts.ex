@@ -9,6 +9,7 @@ defmodule PiggyBank.Accounts do
   alias PiggyBank.Accounts.Account
   alias PiggyBank.AppTelemetryContext
   alias PiggyBank.AppTelemetryContext.AppTelemetry
+  alias PiggyBank.LedgerEntries
   alias PiggyBank.Transactions.Transaction
   require Logger
 
@@ -141,6 +142,23 @@ defmodule PiggyBank.Accounts do
 
     Repo.delete(account)
   end
+
+  @spec calculate_current_balance(Account.t()) :: float()
+  def calculate_current_balance(account) do
+    # Calculate the balance on the account based on its account_type + transactions
+    {total_debits, total_credits} = LedgerEntries.total_debits_and_credits(account.transactions)
+
+    case get_normal_balance(account.account_type.name) do
+      :debit ->
+        total_debits - total_credits
+
+      :credit ->
+        total_credits - total_debits
+    end
+  end
+
+  defp get_normal_balance(account_type) when account_type in ["Asset", "Expense"], do: :debit
+  defp get_normal_balance(_account_type), do: :credit
 
   @doc """
   Returns a data structure for tracking account changes.

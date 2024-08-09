@@ -99,7 +99,8 @@ defmodule PiggyBank.LedgerEntries do
     end)
   end
 
-  defp total_debits_and_credits(transactions) do
+  @spec total_debits_and_credits([Transaction.t()]) :: {float(), float()}
+  def total_debits_and_credits(transactions) do
     total_debits =
       transactions
       |> Enum.filter(fn t -> t.transaction_type == "debit" end)
