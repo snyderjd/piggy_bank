@@ -2,11 +2,16 @@ defmodule PiggyBankWeb.LedgerEntryLive.FormComponent do
   use PiggyBankWeb, :live_component
 
   alias PiggyBank.LedgerEntries
+  alias PiggyBank.LedgerEntries.LedgerEntry
 
   @impl true
   def render(assigns) do
     ~H"""
     <div>
+      <%= if @flash["error"] do %>
+        <.flash kind={:error} flash={@flash} />
+      <% end %>
+
       <.header>
         <%= @title %>
         <:subtitle>Use this form to manage ledger_entry records in your database.</:subtitle>
@@ -125,10 +130,19 @@ defmodule PiggyBankWeb.LedgerEntryLive.FormComponent do
         {:noreply,
          socket
          |> put_flash(:info, "Ledger entry created successfully")
+         |> clear_flash(:error)
          |> push_patch(to: socket.assigns.patch)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign_form(socket, changeset)}
+
+      {:error, _operation, error, changes} ->
+        updated_socket =
+          socket
+          |> put_flash(:error, error)
+          |> assign_form(LedgerEntry.changeset(changes.ledger_entry))
+
+        {:noreply, updated_socket}
     end
   end
 

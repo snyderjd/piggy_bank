@@ -19,7 +19,7 @@ defmodule PiggyBank.LedgerEntries do
       [%LedgerEntry{}, ...]
 
   """
-  def list_ledger_entries(params) do
+  def list_ledger_entries(params \\ %{}) do
     LedgerEntry
     |> preload([:transactions])
     |> order_by([le], desc: le.date)
@@ -99,7 +99,8 @@ defmodule PiggyBank.LedgerEntries do
     end)
   end
 
-  defp total_debits_and_credits(transactions) do
+  @spec total_debits_and_credits([Transaction.t()]) :: {float(), float()}
+  def total_debits_and_credits(transactions) do
     total_debits =
       transactions
       |> Enum.filter(fn t -> t.transaction_type == "debit" end)

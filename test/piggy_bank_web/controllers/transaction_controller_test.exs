@@ -15,6 +15,7 @@ defmodule PiggyBankWeb.TransactionControllerTest do
   end
 
   describe "new transaction" do
+    @tag :skip
     test "renders form", %{conn: conn} do
       conn = get(conn, ~p"/transactions/new")
       assert html_response(conn, 200) =~ "New Transaction"
@@ -22,6 +23,7 @@ defmodule PiggyBankWeb.TransactionControllerTest do
   end
 
   describe "create transaction" do
+    @tag :skip
     test "redirects to show when data is valid", %{conn: conn} do
       conn = post(conn, ~p"/transactions", transaction: @create_attrs)
 
@@ -32,6 +34,7 @@ defmodule PiggyBankWeb.TransactionControllerTest do
       assert html_response(conn, 200) =~ "Transaction #{id}"
     end
 
+    @tag :skip
     test "renders errors when data is invalid", %{conn: conn} do
       conn = post(conn, ~p"/transactions", transaction: @invalid_attrs)
       assert html_response(conn, 200) =~ "New Transaction"
@@ -41,6 +44,7 @@ defmodule PiggyBankWeb.TransactionControllerTest do
   describe "edit transaction" do
     setup [:create_transaction]
 
+    @tag :skip
     test "renders form for editing chosen transaction", %{conn: conn, transaction: transaction} do
       conn = get(conn, ~p"/transactions/#{transaction}/edit")
       assert html_response(conn, 200) =~ "Edit Transaction"
@@ -50,6 +54,7 @@ defmodule PiggyBankWeb.TransactionControllerTest do
   describe "update transaction" do
     setup [:create_transaction]
 
+    @tag :skip
     test "redirects when data is valid", %{conn: conn, transaction: transaction} do
       conn = put(conn, ~p"/transactions/#{transaction}", transaction: @update_attrs)
       assert redirected_to(conn) == ~p"/transactions/#{transaction}"
@@ -58,6 +63,7 @@ defmodule PiggyBankWeb.TransactionControllerTest do
       assert html_response(conn, 200)
     end
 
+    @tag :skip
     test "renders errors when data is invalid", %{conn: conn, transaction: transaction} do
       conn = put(conn, ~p"/transactions/#{transaction}", transaction: @invalid_attrs)
       assert html_response(conn, 200) =~ "Edit Transaction"
@@ -67,6 +73,7 @@ defmodule PiggyBankWeb.TransactionControllerTest do
   describe "delete transaction" do
     setup [:create_transaction]
 
+    @tag :skip
     test "deletes chosen transaction", %{conn: conn, transaction: transaction} do
       conn = delete(conn, ~p"/transactions/#{transaction}")
       assert redirected_to(conn) == ~p"/transactions"

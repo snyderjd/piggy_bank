@@ -13,6 +13,6 @@ defmodule PiggyBank.LedgerEntriesFixtures do
       |> Enum.into(%{})
       |> PiggyBank.LedgerEntries.create_ledger_entry()
 
-    ledger_entry
+    %{ledger_entry: ledger_entry}
   end
 end

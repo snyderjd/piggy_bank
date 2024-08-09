@@ -8,6 +8,8 @@
 </.header>
 
 <.table id="currencies" rows={@currencies} row_click={&JS.navigate(~p"/currencies/#{&1}")}>
+  <:col :let={currency} label="Name"><%= currency.name %></:col>
+  <:col :let={currency} label="Code"><%= currency.code %></:col>
   <:action :let={currency}>
     <div class="sr-only">
       <.link navigate={~p"/currencies/#{currency}"}>Show</.link>

@@ -1,26 +1,18 @@
-<.header>Account Types</.header>
-
-<table>
-  <tr>
-    <th>Name</th>
-  </tr>
-  <%= for account_type <- @account_types do %>
-    <tr>
-      <td><%= account_type.name %></td>
-    </tr>
-  <% end %>
-</table>
-
-<%!-- <.header>
+<.header>
   Listing Account types
   <:actions>
     <.link href={~p"/account_types/new"}>
       <.button>New Account type</.button>
     </.link>
   </:actions>
-</.header> --%>
+</.header>
 
-<%!-- <.table id="account_types" rows={@account_types} row_click={&JS.navigate(~p"/account_types/#{&1}")}>
+<.table
+  id="account_types"
+  rows={@account_types}
+  row_click={&JS.navigate(~p"/account_types/#{&1}")}
+>
+  <:col :let={account_type}><%= account_type.name %></:col>
   <:action :let={account_type}>
     <div class="sr-only">
       <.link navigate={~p"/account_types/#{account_type}"}>Show</.link>
@@ -32,4 +24,4 @@
       Delete
     </.link>
   </:action>
-</.table> --%>
+</.table>

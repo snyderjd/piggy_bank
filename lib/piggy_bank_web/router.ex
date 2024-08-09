@@ -27,8 +27,10 @@ defmodule PiggyBankWeb.Router do
 
     resources "/account_types", AccountTypeController
     resources "/accounts", AccountController
+    resources "/currencies", CurrencyController
     resources "/transactions", TransactionController, only: [:index, :show]
     resources "/ledger_entries", LedgerEntryController, only: [:show, :create]
+    resources "/users", UserController
   end
 
   # Other scopes may use custom stacks.

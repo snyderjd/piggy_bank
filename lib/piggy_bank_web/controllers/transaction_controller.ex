@@ -8,8 +8,6 @@ defmodule PiggyBankWeb.TransactionController do
   def index(conn, params) do
     data = Transactions.list_transactions(params)
 
-    # IO.inspect(data, label: "data")
-
     render(
       conn,
       :index,
@@ -21,6 +19,7 @@ defmodule PiggyBankWeb.TransactionController do
     )
   end
 
+  @spec new(Plug.Conn.t(), map()) :: Plug.Conn.t()
   def new(conn, _params) do
     changeset = Transactions.change_transaction(%Transaction{})
     render(conn, :new, changeset: changeset)

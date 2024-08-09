@@ -2,15 +2,16 @@ defmodule PiggyBankWeb.AccountControllerTest do
   use PiggyBankWeb.ConnCase
 
   import PiggyBank.AccountsFixtures
+  import PiggyBank.AccountTypesFixtures
 
-  @create_attrs %{}
-  @update_attrs %{}
-  @invalid_attrs %{}
+  @create_attrs %{name: "Test Savings Account"}
+  @update_attrs %{name: "Test Savings Account Update"}
+  @invalid_attrs %{name: ""}
 
   describe "index" do
     test "lists all accounts", %{conn: conn} do
       conn = get(conn, ~p"/accounts")
-      assert html_response(conn, 200) =~ "Listing Accounts"
+      assert html_response(conn, 200) =~ "Accounts"
     end
   end
 
@@ -23,13 +24,18 @@ defmodule PiggyBankWeb.AccountControllerTest do
 
   describe "create account" do
     test "redirects to show when data is valid", %{conn: conn} do
-      conn = post(conn, ~p"/accounts", account: @create_attrs)
+      account_type = account_type_fixture(%{"name" => "Liability"})
+
+      attrs =
+        Map.put(@create_attrs, :account_type, account_type)
+
+      conn = post(conn, ~p"/accounts", account: attrs)
 
       assert %{id: id} = redirected_params(conn)
       assert redirected_to(conn) == ~p"/accounts/#{id}"
 
       conn = get(conn, ~p"/accounts/#{id}")
-      assert html_response(conn, 200) =~ "Account #{id}"
+      assert html_response(conn, 200) =~ "Account:"
     end
 
     test "renders errors when data is invalid", %{conn: conn} do
@@ -78,7 +84,9 @@ defmodule PiggyBankWeb.AccountControllerTest do
   end
 
   defp create_account(_) do
-    account = account_fixture()
+    %{account: account, app_telemetry: _telemetry} =
+      account_fixture(@create_attrs)
+
     %{account: account}
   end
 end

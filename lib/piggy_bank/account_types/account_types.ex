@@ -4,8 +4,9 @@ defmodule PiggyBank.AccountTypes do
   """
 
   import Ecto.Query, warn: false
-  alias PiggyBank.Repo
 
+  alias Ecto.Changeset
+  alias PiggyBank.Repo
   alias PiggyBank.AccountTypes.AccountType
 
   @doc """
@@ -34,62 +35,59 @@ defmodule PiggyBank.AccountTypes do
 
   @doc """
   Creates a account_type.
-
   ## Examples
-
       iex> create_account_type(%{field: value})
       {:ok, %AccountType{}}
 
       iex> create_account_type(%{field: bad_value})
       {:error, ...}
-
   """
-  def create_account_type(_attrs \\ %{}) do
-    raise "TODO"
+  @spec create_account_type(map()) :: {:ok, AccountType.t()} | {:error, Changeset.t()}
+  def create_account_type(attrs \\ %{}) do
+    %AccountType{}
+    |> AccountType.changeset(attrs)
+    |> Repo.insert()
   end
 
   @doc """
   Updates a account_type.
-
   ## Examples
-
       iex> update_account_type(account_type, %{field: new_value})
       {:ok, %AccountType{}}
 
       iex> update_account_type(account_type, %{field: bad_value})
       {:error, ...}
-
   """
-  def update_account_type(%AccountType{} = _account_type, _attrs) do
-    raise "TODO"
+  @spec update_account_type(AccountType.t(), map()) ::
+          {:ok, AccountType.t()} | {:error, Changeset.t()}
+  def update_account_type(%AccountType{} = account_type, attrs) do
+    account_type
+    |> AccountType.changeset(attrs)
+    |> Repo.update()
   end
 
   @doc """
   Deletes a AccountType.
-
   ## Examples
-
       iex> delete_account_type(account_type)
       {:ok, %AccountType{}}
 
       iex> delete_account_type(account_type)
       {:error, ...}
-
   """
-  def delete_account_type(%AccountType{} = _account_type) do
-    raise "TODO"
+  @spec delete_account_type(AccountType.t()) :: {:ok, AccountType.t()} | {:error, Changeset.t()}
+  def delete_account_type(%AccountType{} = account_type) do
+    Repo.delete(account_type)
   end
 
   @doc """
   Returns a data structure for tracking account_type changes.
-
   ## Examples
-
       iex> change_account_type(account_type)
       %Todo{...}
-
   """
-  def change_account_type(%AccountType{} = _account_type, _attrs \\ %{}) do
-    raise "TODO"
+  @spec change_account_type(AccountType.t(), map()) :: Changeset.t()
+  def change_account_type(%AccountType{} = account_type, attrs \\ %{}) do
+    AccountType.changeset(account_type, attrs)
   end
 end

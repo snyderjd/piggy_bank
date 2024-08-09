@@ -4,10 +4,13 @@ defmodule PiggyBank.Accounts do
   """
 
   import Ecto.Query, warn: false
-  alias Ecto.Multi
+  alias Ecto.{Changeset, Multi}
   alias PiggyBank.Repo
   alias PiggyBank.Accounts.Account
+  alias PiggyBank.AppTelemetryContext
   alias PiggyBank.AppTelemetryContext.AppTelemetry
+  alias PiggyBank.LedgerEntries
+  alias PiggyBank.Transactions.Transaction
   require Logger
 
   @spec list_accounts() :: [Account.t()]
@@ -19,7 +22,7 @@ defmodule PiggyBank.Accounts do
   """
   def list_accounts do
     Account
-    |> preload([:account_type, :user])
+    |> preload([:account_type, :user, :transactions])
     |> Repo.all()
   end
 
@@ -31,8 +34,14 @@ defmodule PiggyBank.Accounts do
       %Account{}
   """
   def get_account!(id) do
+    transactions =
+      from(t in Transaction,
+        where: t.account_id == ^id,
+        order_by: [desc: t.date]
+      )
+
     Account
-    |> preload([:account_type, :user, :transactions])
+    |> preload([:account_type, :user, transactions: ^transactions])
     |> Repo.get!(id)
   end
 
@@ -56,7 +65,9 @@ defmodule PiggyBank.Accounts do
   end
 
   defp insert_account_changeset(attrs) do
-    Account.changeset(%Account{}, attrs)
+    %Account{}
+    |> Repo.preload([:account_type, :user, :transactions])
+    |> Account.changeset(attrs)
   end
 
   defp telemetry_for_create_account_changeset(account) do
@@ -119,9 +130,35 @@ defmodule PiggyBank.Accounts do
       iex> delete_account(account)
       {:error, ...}
   """
-  def delete_account(%Account{} = _account) do
-    raise "TODO"
+  @spec delete_account(Account.t()) :: {:ok, Account.t()} | {:error, Changeset.t()}
+  def delete_account(%Account{} = account) do
+    # Delete the account's app_telemetry first
+    account
+    |> Repo.preload(:app_telemetry)
+    |> Map.get(:app_telemetry, [])
+    |> Enum.each(fn telemetry ->
+      AppTelemetryContext.delete_app_telemetry(telemetry)
+    end)
+
+    Repo.delete(account)
   end
+
+  @spec calculate_current_balance(Account.t()) :: float()
+  def calculate_current_balance(account) do
+    # Calculate the balance on the account based on its account_type + transactions
+    {total_debits, total_credits} = LedgerEntries.total_debits_and_credits(account.transactions)
+
+    case get_normal_balance(account.account_type.name) do
+      :debit ->
+        total_debits - total_credits
+
+      :credit ->
+        total_credits - total_debits
+    end
+  end
+
+  defp get_normal_balance(account_type) when account_type in ["Asset", "Expense"], do: :debit
+  defp get_normal_balance(_account_type), do: :credit
 
   @doc """
   Returns a data structure for tracking account changes.
@@ -129,6 +166,7 @@ defmodule PiggyBank.Accounts do
       iex> change_account(account)
       %Todo{...}
   """
+  @spec change_account(Account.t()) :: Changeset.t()
   def change_account(%Account{} = account, attrs \\ %{}) do
     Account.changeset(account, attrs)
   end

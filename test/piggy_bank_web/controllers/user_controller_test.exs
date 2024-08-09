@@ -3,9 +3,13 @@ defmodule PiggyBankWeb.UserControllerTest do
 
   import PiggyBank.UsersFixtures
 
-  @create_attrs %{}
-  @update_attrs %{}
-  @invalid_attrs %{}
+  @create_attrs %{
+    "name" => "Steve Jobs",
+    "email" => "steve.jobs@apple.com",
+    "password" => "iloveapples"
+  }
+  @update_attrs %{"email" => "steve.jobs@pixar.com"}
+  @invalid_attrs %{"name" => "", "email" => ""}
 
   describe "index" do
     test "lists all users", %{conn: conn} do
@@ -78,7 +82,7 @@ defmodule PiggyBankWeb.UserControllerTest do
   end
 
   defp create_user(_) do
-    user = user_fixture()
+    user = user_fixture(@create_attrs)
     %{user: user}
   end
 end

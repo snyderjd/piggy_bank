@@ -6,6 +6,7 @@ defmodule PiggyBank.Currencies do
   import Ecto.Query, warn: false
   alias PiggyBank.Repo
 
+  alias Ecto.Changeset
   alias PiggyBank.Currencies.Currency
 
   @doc """
@@ -31,62 +32,58 @@ defmodule PiggyBank.Currencies do
 
   @doc """
   Creates a currency.
-
   ## Examples
-
       iex> create_currency(%{field: value})
       {:ok, %Currency{}}
 
       iex> create_currency(%{field: bad_value})
       {:error, ...}
-
   """
-  def create_currency(_attrs \\ %{}) do
-    raise "TODO"
+  @spec create_currency(map()) :: {:ok, Currency.t()} | {:error, Changeset.t()}
+  def create_currency(attrs \\ %{}) do
+    %Currency{}
+    |> Currency.changeset(attrs)
+    |> Repo.insert()
   end
 
   @doc """
   Updates a currency.
-
   ## Examples
-
       iex> update_currency(currency, %{field: new_value})
       {:ok, %Currency{}}
 
       iex> update_currency(currency, %{field: bad_value})
       {:error, ...}
-
   """
-  def update_currency(%Currency{} = _currency, _attrs) do
-    raise "TODO"
+  @spec update_currency(Currency.t(), map()) :: {:ok, Currency.t()} | {:error, Changeset.t()}
+  def update_currency(%Currency{} = currency, attrs) do
+    currency
+    |> Currency.changeset(attrs)
+    |> Repo.update()
   end
 
   @doc """
   Deletes a Currency.
-
   ## Examples
-
       iex> delete_currency(currency)
       {:ok, %Currency{}}
 
       iex> delete_currency(currency)
       {:error, ...}
-
   """
-  def delete_currency(%Currency{} = _currency) do
-    raise "TODO"
+  @spec delete_currency(Currency.t()) :: {:ok, Currency.t()} | {:error, Changeset.t()}
+  def delete_currency(%Currency{} = currency) do
+    Repo.delete(currency)
   end
 
   @doc """
   Returns a data structure for tracking currency changes.
-
   ## Examples
-
       iex> change_currency(currency)
       %Todo{...}
-
   """
-  def change_currency(%Currency{} = _currency, _attrs \\ %{}) do
-    raise "TODO"
+  @spec change_currency(Currency.t(), map()) :: Changeset.t()
+  def change_currency(%Currency{} = currency, attrs \\ %{}) do
+    Currency.changeset(currency, attrs)
   end
 end

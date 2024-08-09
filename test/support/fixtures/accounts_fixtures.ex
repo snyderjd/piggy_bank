@@ -8,11 +8,11 @@ defmodule PiggyBank.AccountsFixtures do
   Generate a account.
   """
   def account_fixture(attrs \\ %{}) do
-    {:ok, account} =
+    {:ok, multi} =
       attrs
       |> Enum.into(%{})
       |> PiggyBank.Accounts.create_account()
 
-    account
+    multi
   end
 end
